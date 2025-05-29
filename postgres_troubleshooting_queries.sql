@@ -74,7 +74,7 @@ ORDER BY shared_blks_read DESC
 LIMIT 10;
 
 -- 10. High CPU queries
-SELECT query, total_exec_time, calls, mean_time
+SELECT query, total_exec_time, calls, mean_exec_time
 FROM pg_stat_statements
 ORDER BY total_exec_time DESC
 LIMIT 10;
