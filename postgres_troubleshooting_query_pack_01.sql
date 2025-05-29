@@ -76,3 +76,11 @@ SELECT datname, usename, client_addr, state, COUNT(*) AS conn_count
 FROM pg_stat_activity
 GROUP BY datname, usename, client_addr, state
 ORDER BY conn_count DESC;
+
+-- 13. HOT Updates
+SELECT relname,
+       n_tup_upd,
+       n_tup_hot_upd,
+       ROUND(100.0 * n_tup_hot_upd / NULLIF(n_tup_upd, 0), 2) AS hot_update_ratio
+FROM pg_stat_user_tables
+ORDER BY hot_update_ratio DESC;
