@@ -78,3 +78,118 @@ JOIN pg_stat_activity a ON l.pid = a.pid
 WHERE granted
   AND age(clock_timestamp(), query_start) > interval '5 minutes'
 ORDER BY duration DESC;
+
+
+-- 10. Current connections per database
+SELECT datname, COUNT(*) AS connections
+FROM pg_stat_activity
+GROUP BY datname
+ORDER BY connections DESC;
+
+
+-- 11. Check remaining connections vs limit
+SELECT max_conn, used_conn, max_conn - used_conn AS available
+FROM (
+  SELECT COUNT(*) AS used_conn FROM pg_stat_activity
+) AS used,
+(SELECT setting::int AS max_conn FROM pg_settings WHERE name = 'max_connections') AS max;
+
+
+-- 12. Most I/O-heavy queries (pg_stat_statements must be enabled)
+SELECT query, shared_blks_read, local_blks_read, temp_blks_read
+FROM pg_stat_statements
+ORDER BY shared_blks_read DESC
+LIMIT 10;
+
+
+-- 13. Most CPU-intensive queries
+SELECT query, total_time, calls, mean_time
+FROM pg_stat_statements
+ORDER BY total_time DESC
+LIMIT 10;
+
+
+-- 14. Tables due for vacuum/freeze
+SELECT schemaname, relname,
+       n_dead_tup,
+       age(relfrozenxid) AS xid_age,
+       pg_size_pretty(pg_total_relation_size(relid)) AS total_size
+FROM pg_stat_user_tables
+WHERE n_dead_tup > 1000
+   OR age(relfrozenxid) > 150000000
+ORDER BY age(relfrozenxid) DESC;
+
+
+-- 15. Autovacuum activity
+SELECT pid, relname, phase, wait_event_type, wait_event, query
+FROM pg_stat_progress_vacuum
+JOIN pg_class ON pg_stat_progress_vacuum.relid = pg_class.oid;
+
+
+-- 16. All current locks with wait status
+SELECT pid, mode, granted, relation::regclass, query
+FROM pg_locks
+JOIN pg_stat_activity USING (pid)
+WHERE relation IS NOT NULL;
+Tables with frequent deadlocks
+SELECT relname, deadlocks
+FROM pg_stat_user_tables
+WHERE deadlocks > 0
+ORDER BY deadlocks DESC;
+
+-- 17. Duplicate indexes
+SELECT indrelid::regclass AS table,
+       array_agg(indexrelid::regclass) AS dup_indexes
+FROM pg_index
+GROUP BY indrelid, indkey
+HAVING COUNT(*) > 1;
+
+
+-- 18. Indexes with low usage and high size
+SELECT relname AS index_name,
+       pg_size_pretty(pg_relation_size(indexrelid)) AS size,
+       idx_scan
+FROM pg_stat_user_indexes
+WHERE idx_scan < 50
+ORDER BY pg_relation_size(indexrelid) DESC
+LIMIT 10;
+
+
+-- 19. Replication status (on primary)
+SELECT pid, state, client_addr, sync_state, write_lag, flush_lag, replay_lag
+FROM pg_stat_replication;
+
+
+-- 20. WAL activity
+SELECT slot_name, database, active, restart_lsn, confirmed_flush_lsn
+FROM pg_replication_slots;
+
+
+-- 21. Top relations by total size
+SELECT relname AS object,
+       pg_size_pretty(pg_total_relation_size(relid)) AS size
+FROM pg_statio_user_tables
+ORDER BY pg_total_relation_size(relid) DESC
+LIMIT 10;
+
+
+-- 22. Buffer cache hit ratio (should be >99%)
+SELECT sum(blks_hit) / (sum(blks_hit) + sum(blks_read)) AS hit_ratio
+FROM pg_stat_database;
+
+
+-- 23. Show non-default settings
+SELECT name, setting, unit, source
+FROM pg_settings
+WHERE source NOT IN ('default', 'override');
+
+
+-- 24. Autovacuum tuning settings
+SELECT name, setting
+FROM pg_settings
+WHERE name ILIKE 'autovacuum%';
+
+-- 25. Quick Health Check (Wraparound Risk)
+SELECT datname, age(datfrozenxid) AS xid_age, pg_size_pretty(pg_database_size(datname)) AS db_size
+FROM pg_database
+ORDER BY age(datfrozenxid) DESC;
