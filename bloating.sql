@@ -43,3 +43,8 @@ FROM (
   LEFT JOIN pg_class c2 ON c2.oid = i.indexrelid
 ) AS sml
 ORDER BY wastedbytes DESC
+
+--Get Stats for All Tables in Schema:
+SELECT relname,
+       (pgstattuple('"' || schemaname || '"."' || relname || '"')).*
+FROM pg_stat_user_tables;
