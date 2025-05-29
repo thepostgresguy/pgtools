@@ -1,0 +1,108 @@
+
+PostgreSQL Troubleshooting Cheat Sheet
+=======================================
+
+1. Activity Monitoring
+----------------------
+- pg_stat_activity
+    Shows current sessions, queries, states, and wait events.
+
+- pg_stat_statements
+    Extension that tracks execution stats for all normalized queries.
+    Requires: CREATE EXTENSION pg_stat_statements;
+
+- pg_locks
+    Displays locks held by sessions and which are waiting.
+
+- pg_stat_progress_vacuum / pg_stat_progress_create_index / etc.
+    Monitor progress of long-running operations like VACUUM, ANALYZE, CREATE INDEX.
+
+2. Table & Index Health
+------------------------
+- pg_stat_user_tables
+    Rows read, dead tuples, autovacuum info.
+
+- pg_stat_user_indexes
+    Index usage counts.
+
+- pg_statio_user_tables
+    Table I/O stats like sequential vs index reads.
+
+- pg_statio_user_indexes
+    Index I/O patterns.
+
+- pg_class + pg_index
+    Metadata on tables/indexes (size, type, etc.).
+
+3. Disk Usage & Bloat
+----------------------
+- pg_total_relation_size()
+    Total size of a table including indexes and toast.
+
+- pg_relation_size()
+    Size of only the table heap.
+
+- pg_tablespace_size()
+    Disk usage by tablespace.
+
+- pgstattuple (extension)
+    Precise bloat estimation (enable via CREATE EXTENSION pgstattuple).
+
+- pgstattuple_approx
+    Fast but approximate bloat check.
+
+4. Autovacuum & XID Freeze
+---------------------------
+- pg_stat_user_tables
+    Shows last vacuum/analyze times, dead tuples.
+
+- age(relfrozenxid)
+    Helps detect risk of transaction ID wraparound.
+
+- pg_class + pg_database
+    XID and table aging info.
+
+5. Locking and Blocking
+------------------------
+- pg_locks
+    Lock types, modes, held vs. waiting.
+
+- pg_stat_activity
+    Combine with pg_locks to identify blockers/blockees.
+
+6. WAL & Checkpoints
+---------------------
+- pg_stat_bgwriter
+    Buffer writes, checkpoints, fsyncs.
+
+- pg_current_wal_lsn()
+    Returns current WAL location.
+
+- pg_stat_wal (Postgres 14+)
+    WAL archiving and sync stats.
+
+7. Replication Monitoring
+--------------------------
+- pg_stat_replication
+    Shows active replication connections, lag, state.
+
+- pg_replication_slots
+    Slot activity and retention info.
+
+- pg_stat_wal_receiver (on replicas)
+    Receiver status for streaming replicas.
+
+8. Config and Parameters
+-------------------------
+- pg_settings
+    Shows all config settings and current values.
+
+- pg_file_settings
+    Which settings come from config files (PG 12+).
+
+9. Useful Extensions
+---------------------
+- pg_stat_statements
+- pg_buffercache
+- pg_freespacemap
+- pgstattuple
