@@ -74,9 +74,9 @@ ORDER BY shared_blks_read DESC
 LIMIT 10;
 
 -- 10. High CPU queries
-SELECT query, total_time, calls, mean_time
+SELECT query, total_exec_time, calls, mean_time
 FROM pg_stat_statements
-ORDER BY total_time DESC
+ORDER BY total_exec_time DESC
 LIMIT 10;
 
 -- 11. Autovacuum in progress
