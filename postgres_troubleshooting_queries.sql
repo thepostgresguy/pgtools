@@ -79,10 +79,9 @@ FROM pg_stat_statements
 ORDER BY total_exec_time DESC
 LIMIT 10;
 
--- 11. Autovacuum in progress
-SELECT pid, relname, phase, wait_event_type, wait_event, query
-FROM pg_stat_progress_vacuum
-JOIN pg_class ON pg_stat_progress_vacuum.relid = pg_class.oid;
+-- 11. Vacuum in progress
+SELECT *
+FROM pg_stat_progress_vacuum;
 
 -- 12. Current locks
 SELECT pid, mode, granted, relation::regclass, query
@@ -90,11 +89,9 @@ FROM pg_locks
 JOIN pg_stat_activity USING (pid)
 WHERE relation IS NOT NULL;
 
--- 13. Frequent deadlocks
-SELECT relname, deadlocks
-FROM pg_stat_user_tables
-WHERE deadlocks > 0
-ORDER BY deadlocks DESC;
+-- 13. User tables stats
+SELECT *
+FROM pg_stat_user_tables;
 
 -- 14. Duplicate indexes
 SELECT indrelid::regclass AS table,
