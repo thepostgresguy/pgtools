@@ -51,9 +51,9 @@ WHERE idx_scan = 0
 ORDER BY pg_relation_size(indexrelid) DESC;
 
 -- 8. Top Slow Queries (requires pg_stat_statements)
-SELECT query, calls, total_time, mean_time, rows
+SELECT query, calls, total_exec_time, mean_exec_time, rows
 FROM pg_stat_statements
-ORDER BY total_time DESC
+ORDER BY total_exec_time DESC
 LIMIT 10;
 
 -- 9. Transaction ID Wraparound Risk
