@@ -51,9 +51,9 @@ WHERE idx_scan = 0
 ORDER BY pg_relation_size(indexrelid) DESC;
 
 -- 8. Top Slow Queries (requires pg_stat_statements)
-SELECT query, calls, total_time, mean_time, rows
+SELECT query, calls, total_exec_time, mean_exec_time, rows
 FROM pg_stat_statements
-ORDER BY total_time DESC
+ORDER BY total_exec_time DESC
 LIMIT 10;
 
 -- 9. Transaction ID Wraparound Risk
@@ -107,10 +107,9 @@ ORDER BY temp_bytes DESC;
 -- 5. Checkpoint Statistics
 SELECT * FROM pg_stat_bgwriter;
 
--- 6. WAL Generation by Database
-SELECT datname, pg_size_pretty(blks_written * 8192) AS wal_written
-FROM pg_stat_database
-ORDER BY blks_written DESC;
+-- 6. Database stats
+SELECT *
+FROM pg_stat_database;
 
 -- 7. Tables with Large TOAST Data
 SELECT t.oid::regclass AS table,
