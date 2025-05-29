@@ -12,12 +12,8 @@ FROM pg_catalog.pg_statio_user_tables
 ORDER BY pg_total_relation_size(relid) DESC
 LIMIT 10;
 
--- 2. WAL Activity Overview
-SELECT
-  datname,
-  pg_size_pretty(sum(pg_xlog_location_diff(pg_current_xlog_insert_location(), replay_location))) AS wal_lag
-FROM pg_stat_replication
-GROUP BY datname;
+-- 2. Replication lag (on replica)
+select now()-pg_last_xact_replay_timestamp() as replication_lag
 
 
 -- 3.Replication Slots and Their Status
@@ -72,7 +68,7 @@ WHERE name = 'max_connections';
 
 
 -- 9. Check for Locks Held Too Long
-SELECT pid, mode, relation::regclass, granted, age(clock_timestamp(), query_start) AS duration, query
+SELECT a.pid, mode, relation::regclass, granted, age(clock_timestamp(), query_start) AS duration, query
 FROM pg_locks l
 JOIN pg_stat_activity a ON l.pid = a.pid
 WHERE granted
@@ -103,27 +99,34 @@ LIMIT 10;
 
 
 -- 13. Most CPU-intensive queries
-SELECT query, total_time, calls, mean_time
+SELECT query, total_exec_time, calls, mean_exec_time
 FROM pg_stat_statements
-ORDER BY total_time DESC
+ORDER BY total_exec_time DESC
 LIMIT 10;
 
 
 -- 14. Tables due for vacuum/freeze
-SELECT schemaname, relname,
-       n_dead_tup,
-       age(relfrozenxid) AS xid_age,
-       pg_size_pretty(pg_total_relation_size(relid)) AS total_size
-FROM pg_stat_user_tables
-WHERE n_dead_tup > 1000
-   OR age(relfrozenxid) > 150000000
-ORDER BY age(relfrozenxid) DESC;
+SELECT oid::regclass AS table_name,
+       /* number of transactions over "vacuum_freeze_table_age" */
+       age(c.relfrozenxid)
+       - current_setting('vacuum_freeze_table_age')::integer AS overdue_by
+FROM pg_class AS c 
+WHERE c.relkind IN ('r','m','t')  /* tables, matviews, TOAST tables */
+  AND age(c.relfrozenxid)
+      > least(
+           /* it is ok to go a bit beyond the limit where VACUUM is triggered */
+           current_setting('autovacuum_freeze_max_age')::integer + 50000000,
+           /* but at this point, we'll get warnings */
+           2^31 - 40000000
+        )
+ORDER BY /* worst first */ age(c.relfrozenxid) DESC;
 
 
 -- 15. Autovacuum activity
-SELECT pid, relname, phase, wait_event_type, wait_event, query
-FROM pg_stat_progress_vacuum
-JOIN pg_class ON pg_stat_progress_vacuum.relid = pg_class.oid;
+SELECT psa.pid, relname, phase, wait_event_type, wait_event, query
+FROM pg_stat_progress_vacuum pspv
+  JOIN pg_stat_activity psa on psa.pid=pspv.pid
+JOIN pg_class pc ON pspv.relid = pc.oid;
 
 
 -- 16. All current locks with wait status
@@ -131,11 +134,6 @@ SELECT pid, mode, granted, relation::regclass, query
 FROM pg_locks
 JOIN pg_stat_activity USING (pid)
 WHERE relation IS NOT NULL;
-Tables with frequent deadlocks
-SELECT relname, deadlocks
-FROM pg_stat_user_tables
-WHERE deadlocks > 0
-ORDER BY deadlocks DESC;
 
 -- 17. Duplicate indexes
 SELECT indrelid::regclass AS table,
