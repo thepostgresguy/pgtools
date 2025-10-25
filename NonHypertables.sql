@@ -1,1 +1,0 @@
-select tablename from pg_tables where schemaname='public' and tablename not in (select table_name from _timescaledb_catalog.hypertable where schema_name='public');
