@@ -69,6 +69,12 @@ psql -U username -d database_name -f locks.sql
 - Monitors transaction wraparound risk
 - Shows age of databases and tables
 
+**connection_pools.sql**
+- Monitors connection pooling health and efficiency
+- Analyzes connection patterns and potential leaks
+- Provides connection pool optimization recommendations
+- Works with PgBouncer, Pgpool-II, and native connections
+
 ### 🔧 Maintenance Scripts
 **switch_pg_wal_file.sql**
 - Forces WAL file switching
@@ -105,11 +111,37 @@ psql -U username -d database_name -f locks.sql
 - Useful for TimescaleDB users
 - Helps in migration planning
 
+**partition_management.sql**
+- Monitors partition health and performance
+- Analyzes partition size distribution and balance
+- Provides partition maintenance recommendations
+- Supports automated partition management strategies
+
 ### ⚡ Optimization Scripts
 **hot_update_optimization_checklist.sql**
 - Checks HOT (Heap-Only Tuple) update optimization
 - Identifies inefficient table structures
 - Suggests fillfactor adjustments
+
+**missing_indexes.sql**
+- Identifies potentially beneficial indexes based on query patterns
+- Analyzes sequential scan activity and unused indexes
+- Detects foreign key columns missing indexes
+- Provides index optimization recommendations
+
+### 📦 Backup & Recovery Scripts
+**backup_validation.sql**
+- Validates backup completeness and integrity
+- Checks WAL archiving status and health
+- Analyzes backup readiness and configuration
+- Provides backup strategy recommendations
+
+### 🔒 Security Scripts
+**permission_audit.sql**
+- Comprehensive security audit of roles and permissions
+- Identifies overprivileged accounts and security risks
+- Analyzes database, schema, and table-level access
+- Reviews authentication and Row Level Security (RLS)
 
 ### 🩺 Troubleshooting Scripts
 **postgres_troubleshooting_queries.sql**
@@ -137,19 +169,35 @@ psql -U username -d database_name -f locks.sql
 ## Usage Examples
 ### Check for blocking queries
 ```bash
-psql -U postgres -d mydb -f postgres_locking_blocking.sql
+psql -U postgres -d mydb -f monitoring/postgres_locking_blocking.sql
 ```
 ### Monitor replication lag
 ```bash
-psql -U postgres -d mydb -f replication.sql
+psql -U postgres -d mydb -f monitoring/replication.sql
 ```
 ### Identify bloated tables
 ```bash
-psql -U postgres -d mydb -f bloating.sql
+psql -U postgres -d mydb -f monitoring/bloating.sql
 ```
 ### Check transaction wraparound risk
 ```bash
-psql -U postgres -d mydb -f txid.sql
+psql -U postgres -d mydb -f monitoring/txid.sql
+```
+### Validate backup readiness
+```bash
+psql -U postgres -d mydb -f backup/backup_validation.sql
+```
+### Analyze connection pooling efficiency
+```bash
+psql -U postgres -d mydb -f monitoring/connection_pools.sql
+```
+### Find missing indexes
+```bash
+psql -U postgres -d mydb -f optimization/missing_indexes.sql
+```
+### Security audit
+```bash
+psql -U postgres -d mydb -f security/permission_audit.sql
 ```
 ## Best Practices
 1. **Test in non-production first**: Always test scripts in development/staging before running in production
@@ -161,21 +209,32 @@ psql -U postgres -d mydb -f txid.sql
 ## Common Use Cases
 ### Daily Health Check
 ```bash
-psql -d mydb -f locks.sql
-psql -d mydb -f replication.sql
-psql -d mydb -f txid.sql
+psql -d mydb -f monitoring/locks.sql
+psql -d mydb -f monitoring/replication.sql
+psql -d mydb -f monitoring/txid.sql
+psql -d mydb -f monitoring/connection_pools.sql
 ```
 ### Performance Investigation
 ```bash
-psql -d mydb -f bloating.sql
-psql -d mydb -f buffer_troubleshoot.sql
-psql -d mydb -f postgres_troubleshooting_queries.sql
+psql -d mydb -f monitoring/bloating.sql
+psql -d mydb -f monitoring/buffer_troubleshoot.sql
+psql -d mydb -f optimization/missing_indexes.sql
+psql -d mydb -f troubleshooting/postgres_troubleshooting_queries.sql
 ```
 ### Before Major Changes
 ```bash
-psql -d mydb -f table_ownership.sql
-psql -d mydb -f ForeignConst.sql
-psql -d mydb -f extensions.sql
+psql -d mydb -f administration/table_ownership.sql
+psql -d mydb -f administration/ForeignConst.sql
+psql -d mydb -f administration/extensions.sql
+psql -d mydb -f backup/backup_validation.sql
+```
+### Security Audit
+```bash
+psql -d mydb -f security/permission_audit.sql
+```
+### Partition Management
+```bash
+psql -d mydb -f administration/partition_management.sql
 ```
 ## Contributing
 Contributions are welcome! Please:

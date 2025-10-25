@@ -8,6 +8,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **NEW: Backup & Recovery Scripts**
+  - `backup/backup_validation.sql` - Comprehensive backup health validation
+  - WAL archiving status and configuration analysis
+  - Backup strategy recommendations and automation suggestions
+
+- **NEW: Security Scripts**
+  - `security/permission_audit.sql` - Complete security audit framework
+  - Role hierarchy and privilege analysis
+  - Database, schema, and table-level security review
+  - Row Level Security (RLS) audit and recommendations
+
+- **Enhanced Monitoring Scripts**
+  - `monitoring/connection_pools.sql` - Connection pooling analysis and optimization
+  - Connection leak detection and pool efficiency metrics
+  - PgBouncer and Pgpool-II compatibility
+
+- **Enhanced Optimization Scripts**
+  - `optimization/missing_indexes.sql` - Advanced index recommendation engine
+  - Sequential scan analysis and unused index detection
+  - Foreign key index validation and suggestions
+
+- **Enhanced Administration Scripts**
+  - `administration/partition_management.sql` - Comprehensive partition lifecycle management
+  - Partition health monitoring and balance analysis
+  - Automated partition maintenance recommendations
+
 - Comprehensive README with usage examples and best practices
 - Standardized header comments for all SQL scripts including:
   - Purpose and description
@@ -21,10 +47,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Reorganized scripts into logical folders:
-  - `administration/` - Database administration scripts (extensions, ownership, constraints)
+  - `administration/` - Database administration scripts (extensions, ownership, constraints, partitions)
+  - `backup/` - Backup validation and recovery readiness tools
   - `maintenance/` - WAL file management and maintenance utilities
-  - `monitoring/` - Performance and health monitoring (locks, bloat, replication)
-  - `optimization/` - Performance optimization tools (HOT updates)
+  - `monitoring/` - Performance and health monitoring (locks, bloat, replication, connections)
+  - `optimization/` - Performance optimization tools (HOT updates, index analysis)
+  - `security/` - Security auditing and compliance tools
   - `troubleshooting/` - Diagnostic queries and troubleshooting packs
 
 ### Improved
@@ -92,10 +120,14 @@ No breaking changes. Scripts have been reorganized into folders, so update any a
 - [ ] Docker container for easy testing
 - [ ] Additional replication monitoring for logical replication
 - [ ] Query performance analysis scripts
-- [ ] Partition management utilities
-- [ ] Backup and recovery scripts
-- [ ] Connection pooling analysis
-- [ ] Index usage and recommendation scripts
+- [ ] Advanced wait event analysis
+- [ ] Memory usage optimization tools
+- [ ] Configuration tuning automation
+- [x] Partition management utilities ✓
+- [x] Backup and recovery scripts ✓
+- [x] Connection pooling analysis ✓
+- [x] Index usage and recommendation scripts ✓
+- [x] Security audit and compliance tools ✓
 
 ### Under Consideration
 - Web dashboard for visualizing metrics
