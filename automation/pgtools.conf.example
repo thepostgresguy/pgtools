@@ -1,0 +1,44 @@
+# PostgreSQL Tools Configuration File
+# Copy this file and customize for your environment
+
+# Database Connection Parameters
+PGHOST=localhost
+PGPORT=5432
+PGDATABASE=postgres
+PGUSER=monitoring_user
+# PGPASSWORD=secure_password  # Use .pgpass file instead for security
+
+# Email Notification Settings
+EMAIL_ALERTS=true
+EMAIL_RECIPIENTS="dba@company.com,ops@company.com"
+SMTP_SERVER=localhost
+EMAIL_FROM="pgtools@$(hostname)"
+
+# Alert Thresholds
+CONNECTION_THRESHOLD=80          # Percentage of max_connections
+BLOAT_THRESHOLD=20              # Percentage dead tuples
+REPLICATION_LAG_THRESHOLD=100   # MB of replication lag
+TRANSACTION_AGE_THRESHOLD=500000000  # Transaction age warning
+
+# Report Settings
+RETENTION_DAYS=30               # Keep reports for 30 days
+COMPRESS_OLD_REPORTS=true       # Compress reports older than 7 days
+
+# Monitoring Schedule (for cron integration)
+DAILY_QUICK_CHECK="0 8 * * *"     # 8 AM daily quick check
+WEEKLY_FULL_CHECK="0 2 * * 0"     # 2 AM Sunday full check
+MONTHLY_SECURITY_AUDIT="0 3 1 * *" # 3 AM first day of month
+
+# Performance Settings
+QUERY_TIMEOUT=300               # 5 minutes timeout for long queries
+PARALLEL_EXECUTION=false        # Run scripts in parallel (experimental)
+MAX_PARALLEL_JOBS=3            # Maximum parallel jobs if enabled
+
+# Integration Settings
+GRAFANA_WEBHOOK_URL=""          # Optional Grafana webhook for alerts
+SLACK_WEBHOOK_URL=""           # Optional Slack webhook for notifications
+PROMETHEUS_PUSHGATEWAY=""      # Optional Prometheus pushgateway
+
+# Debug and Development
+DEBUG_MODE=false               # Enable verbose debugging
+PRESERVE_TEMP_FILES=false     # Keep temporary files for debugging

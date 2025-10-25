@@ -243,8 +243,90 @@ Contributions are welcome! Please:
 3. Include usage examples in script headers
 4. Update this README with new scripts
 
+## Automation Framework
+
+The `automation/` directory provides a complete operational framework for pgtools:
+
+- **`pgtools_health_check.sh`** - Comprehensive automation wrapper with multi-format reporting
+- **`pgtools_scheduler.sh`** - Cron job management and scheduling
+- **`run_security_audit.sh`** - Automated security audit runner  
+- **`cleanup_reports.sh`** - Report cleanup and log rotation
+- **`export_metrics.sh`** - Metrics export for Prometheus/Grafana
+- **`test_pgtools.sh`** - Testing framework and validation
+
+### Quick Automation Setup
+```bash
+# Configure automation
+cp automation/pgtools.conf.example automation/pgtools.conf
+edit automation/pgtools.conf
+
+# Install automated monitoring
+./automation/pgtools_scheduler.sh install
+
+# Run comprehensive health check
+./automation/pgtools_health_check.sh --format html --email
+```
+
+See `automation/README.md` for complete documentation.
+
+## Directory Structure
+
+```
+administration/           # Database administration utilities
+├── extensions.sql       # Extension management queries
+├── ForeignConst.sql     # Foreign key constraint analysis  
+├── NonHypertables.sql   # TimescaleDB hypertable identification
+├── partition_management.sql  # Comprehensive partition lifecycle management
+└── table_ownership.sql  # Table ownership and permission queries
+
+automation/              # Automation and operational integration
+├── cleanup_reports.sh   # Report cleanup and log rotation
+├── export_metrics.sh    # Metrics export for monitoring systems
+├── pgtools.conf.example # Configuration template
+├── pgtools_health_check.sh  # Comprehensive health check automation
+├── pgtools_scheduler.sh # Cron job management and scheduling
+├── README.md           # Automation framework documentation
+├── run_security_audit.sh    # Automated security audit runner
+└── test_pgtools.sh     # Testing framework and validation
+
+backup/                  # Backup validation and monitoring
+└── backup_validation.sql    # Comprehensive backup health validation
+
+maintenance/             # Database maintenance scripts
+├── switch_pg_wal_file.sql    # WAL file rotation
+├── walfile_in_use.sql        # Current WAL file information
+└── Transaction Wraparound/    # Transaction wraparound monitoring
+    ├── queries.sql
+    └── README.md
+
+monitoring/              # Performance and health monitoring
+├── bloating.sql         # Table and index bloat detection
+├── buffer_troubleshoot.sql   # Buffer pool analysis
+├── connection_pools.sql # Connection pooling efficiency analysis
+├── locks.sql            # Lock monitoring and analysis
+├── postgres_locking_blocking.sql  # Blocking query identification
+├── replication.sql      # Replication status and lag monitoring  
+└── txid.sql            # Transaction ID monitoring
+
+optimization/            # Performance optimization tools
+├── hot_update_optimization_checklist.sql  # HOT update analysis
+└── missing_indexes.sql  # Intelligent index recommendation engine
+
+security/                # Security auditing and compliance
+└── permission_audit.sql # Enterprise-grade security audit
+
+troubleshooting/         # Diagnostic and troubleshooting queries
+├── postgres_troubleshooting_cheat_sheet.txt     # Quick reference guide
+├── postgres_troubleshooting_queries.sql         # General diagnostic queries
+├── postgres_troubleshooting_query_pack_01.sql   # Focused query set 1
+├── postgres_troubleshooting_query_pack_02.sql   # Focused query set 2
+└── postgres_troubleshooting_query_pack_03.sql   # Focused query set 3
+```
+
 ## License
 See LICENSE file for details.
+
 ## Support
 For issues, questions, or contributions, please open an issue in the repository.
+
 **Note**: These scripts are provided as-is. Always review and test scripts in a non-production environment before using them on production databases.
