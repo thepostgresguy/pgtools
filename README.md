@@ -2,11 +2,15 @@
 
 A collection of SQL scripts and utilities for monitoring, troubleshooting, and maintaining PostgreSQL databases.
 
-## 📋 Table of Contents
+## � New to pgtools?
+
+**[👉 Get Started Here - Complete Beginner's Guide](GETTING-STARTED.md)**
+
+Perfect for new users! This comprehensive guide walks you through installation, first steps, essential workflows, and automation setup.
+
+##  Table of Contents
 
 - [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Quick Start](#quick-start)
 - [Script Categories](#script-categories)
 - [Usage Examples](#usage-examples)
 - [Contributing](#contributing)
@@ -20,23 +24,6 @@ This toolkit provides battle-tested SQL scripts for PostgreSQL database administ
 - Maintain database integrity
 - Optimize query performance
 - Manage replication and WAL files
-
-## Prerequisites
-
-- PostgreSQL 10+ (some scripts may work with earlier versions)
-- Appropriate database privileges (typically `pg_monitor` role or superuser)
-- `psql` command-line tool or any PostgreSQL client
-
-## Quick Start
-
-```bash
-# Clone the repository
-git clone https://github.com/thepostgresguy/pgtools.git
-cd pgtools
-
-# Connect to your database and run a script
-psql -U username -d database_name -f locks.sql
-```
 ## Script Categories
 ### 🔍 Monitoring Scripts
 **bloating.sql**
