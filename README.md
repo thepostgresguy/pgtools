@@ -90,6 +90,25 @@ psql -U username -d database_name -f locks.sql
 - Scripts for monitoring and preventing transaction ID wraparound
 - Critical for database availability
 
+### 🤖 Maintenance Automation
+**auto_maintenance.sh**
+- Comprehensive automated maintenance operations (VACUUM, ANALYZE, REINDEX)
+- Intelligent threshold-based maintenance with configurable parameters
+- Parallel processing with safety controls and dry-run mode
+- Large table detection and resource management
+
+**maintenance_scheduler.sql**
+- Analysis and scheduling recommendations for maintenance operations
+- VACUUM/ANALYZE candidate identification with workload estimation
+- Index bloat analysis and autovacuum effectiveness assessment
+- Maintenance planning and resource optimization
+
+**statistics_collector.sql**
+- Table and index statistics analysis and optimization
+- Statistics quality assessment and freshness analysis
+- Column distribution analysis with optimization recommendations
+- Extended statistics support for PostgreSQL 10+
+
 ### 👤 Administration Scripts
 **extensions.sql**
 - Lists installed PostgreSQL extensions
@@ -244,6 +263,17 @@ psql -U postgres -d mydb -f optimization/missing_indexes.sql
 ```bash
 psql -U postgres -d mydb -f security/permission_audit.sql
 ```
+### Run automated maintenance
+```bash
+# Automated VACUUM/ANALYZE with intelligent thresholds
+./maintenance/auto_maintenance.sh --operation auto --verbose
+
+# Generate maintenance scheduling analysis
+psql -U postgres -d mydb -f maintenance/maintenance_scheduler.sql
+
+# Analyze statistics quality and optimization
+psql -U postgres -d mydb -f maintenance/statistics_collector.sql
+```
 ## Best Practices
 1. **Test in non-production first**: Always test scripts in development/staging before running in production
 2. **Check privileges**: Ensure you have necessary permissions before running scripts
@@ -258,6 +288,7 @@ psql -d mydb -f monitoring/locks.sql
 psql -d mydb -f monitoring/replication.sql
 psql -d mydb -f monitoring/txid.sql
 psql -d mydb -f monitoring/connection_pools.sql
+./maintenance/auto_maintenance.sh --operation auto --verbose
 ```
 ### Performance Investigation
 ```bash
@@ -311,6 +342,20 @@ psql -d mydb -f configuration/configuration_analysis.sql
 ### Start Prometheus Exporter
 ```bash
 ./integration/prometheus_exporter.sh --port 9187 --daemon
+```
+### Maintenance Automation
+```bash
+# Run automated maintenance with intelligent thresholds
+./maintenance/auto_maintenance.sh --operation auto --dry-run
+
+# VACUUM tables with >15% dead tuples, using 4 parallel jobs
+./maintenance/auto_maintenance.sh --operation vacuum --dead-threshold 15 --parallel 4
+
+# Generate comprehensive maintenance analysis
+psql -d mydb -f maintenance/maintenance_scheduler.sql
+
+# Analyze statistics quality for optimization
+psql -d mydb -f maintenance/statistics_collector.sql
 ```
 ## Contributing
 Contributions are welcome! Please:
@@ -368,9 +413,13 @@ automation/              # Automation and operational integration
 backup/                  # Backup validation and monitoring
 └── backup_validation.sql    # Comprehensive backup health validation
 
-maintenance/             # Database maintenance scripts
+maintenance/             # Database maintenance and automation
+├── auto_maintenance.sh       # Comprehensive automated maintenance operations
+├── maintenance_scheduler.sql # Maintenance analysis and scheduling recommendations
+├── statistics_collector.sql  # Statistics analysis and optimization
 ├── switch_pg_wal_file.sql    # WAL file rotation
 ├── walfile_in_use.sql        # Current WAL file information
+├── README.md                # Maintenance automation framework documentation
 └── Transaction Wraparound/    # Transaction wraparound monitoring
     ├── queries.sql
     └── README.md
