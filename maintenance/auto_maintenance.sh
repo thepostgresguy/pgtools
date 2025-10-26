@@ -2,6 +2,54 @@
 #
 # Script: auto_maintenance.sh
 # Purpose: Automated PostgreSQL maintenance operations (VACUUM, ANALYZE, REINDEX)
+#
+# ANNOTATED EXAMPLES:
+#
+#   Basic Usage:
+#   # Run automatic maintenance (combines ANALYZE + selective VACUUM)
+#   ./maintenance/auto_maintenance.sh --operation auto --verbose
+#
+#   # Dry run to preview what would be done
+#   ./maintenance/auto_maintenance.sh --operation auto --dry-run
+#
+#   VACUUM Operations:
+#   # VACUUM tables with >15% dead tuples
+#   ./maintenance/auto_maintenance.sh --operation vacuum --dead-threshold 15
+#
+#   # VACUUM specific tables
+#   ./maintenance/auto_maintenance.sh --operation vacuum --tables "orders,users,sessions"
+#
+#   # VACUUM tables matching pattern
+#   ./maintenance/auto_maintenance.sh --operation vacuum --tables "user_*,order_*"
+#
+#   ANALYZE Operations:
+#   # ANALYZE all tables with stale statistics
+#   ./maintenance/auto_maintenance.sh --operation analyze --verbose
+#
+#   # ANALYZE specific schema with 4 parallel jobs
+#   ./maintenance/auto_maintenance.sh --operation analyze --schema public --parallel 4
+#
+#   Production Deployment:
+#   # Safe maintenance during low-traffic period
+#   ./maintenance/auto_maintenance.sh --operation auto --skip-large --large-size 5GB --parallel 2
+#
+#   # Weekly comprehensive maintenance
+#   ./maintenance/auto_maintenance.sh --operation analyze --parallel 4 --output weekly_maintenance.log
+#
+#   Emergency Scenarios:
+#   # Emergency VACUUM for bloated tables
+#   ./maintenance/auto_maintenance.sh --operation vacuum --dead-threshold 10 --verbose
+#
+#   # Target specific problem tables
+#   ./maintenance/auto_maintenance.sh --operation vacuum --tables "problem_table" --verbose
+#
+#   Automation Integration:
+#   # Daily cron job (2 AM)
+#   0 2 * * * /path/to/pgtools/maintenance/auto_maintenance.sh --operation auto --output /var/log/postgresql/daily_maintenance.log
+#
+#   # Weekly comprehensive analysis (Sunday 1 AM)
+#   0 1 * * 0 /path/to/pgtools/maintenance/auto_maintenance.sh --operation analyze --parallel 4 --verbose
+#
 # Usage: ./maintenance/auto_maintenance.sh [OPTIONS]
 #
 
