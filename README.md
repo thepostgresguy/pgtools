@@ -143,6 +143,51 @@ psql -U username -d database_name -f locks.sql
 - Analyzes database, schema, and table-level access
 - Reviews authentication and Row Level Security (RLS)
 
+### ⚡ Performance Analysis Scripts
+**wait_event_analysis.sql**
+- Comprehensive analysis of PostgreSQL wait events and performance bottlenecks
+- Identifies I/O, locking, and resource contention issues
+- Provides detailed wait event categorization and recommendations
+- Analyzes connection pooling and background worker efficiency
+
+**query_performance_profiler.sql**
+- Detailed query performance analysis using pg_stat_statements
+- Identifies slow queries, I/O intensive operations, and resource usage
+- Analyzes query variance and performance degradation patterns
+- Provides optimization recommendations for query tuning
+
+**resource_monitoring.sql**
+- Comprehensive system resource utilization monitoring
+- Analyzes memory, I/O, connection, and storage usage patterns
+- Monitors autovacuum activity and maintenance requirements
+- Provides resource optimization recommendations
+
+### ⚙️ Configuration Management Scripts
+**configuration_analysis.sql**
+- Comprehensive PostgreSQL configuration analysis and recommendations
+- Reviews memory, connection, WAL, and security settings
+- Analyzes current parameters against best practices
+- Provides workload-specific tuning suggestions
+
+**parameter_tuner.sh** (automation/configuration/)
+- Interactive PostgreSQL parameter tuning assistant
+- Generates optimized configurations for different workload types (OLTP, OLAP, Web)
+- Provides memory and performance setting recommendations
+- Supports configuration validation and analysis modes
+
+### 🔗 Integration Tools
+**grafana_dashboard_generator.sh** (integration/)
+- Generates comprehensive Grafana dashboards for PostgreSQL monitoring
+- Supports multiple dashboard types: comprehensive, performance, security, connections
+- Provides direct Grafana API integration for automatic dashboard deployment
+- Creates customizable monitoring visualizations
+
+**prometheus_exporter.sh** (integration/)
+- Custom PostgreSQL metrics exporter for Prometheus
+- Exports database statistics, connection metrics, and performance data
+- Supports daemon mode for continuous metrics collection
+- Provides HTTP endpoint for Prometheus scraping
+
 ### 🩺 Troubleshooting Scripts
 **postgres_troubleshooting_queries.sql**
 - Collection of diagnostic queries
@@ -219,6 +264,8 @@ psql -d mydb -f monitoring/connection_pools.sql
 psql -d mydb -f monitoring/bloating.sql
 psql -d mydb -f monitoring/buffer_troubleshoot.sql
 psql -d mydb -f optimization/missing_indexes.sql
+psql -d mydb -f performance/query_performance_profiler.sql
+psql -d mydb -f performance/wait_event_analysis.sql
 psql -d mydb -f troubleshooting/postgres_troubleshooting_queries.sql
 ```
 ### Before Major Changes
@@ -227,6 +274,7 @@ psql -d mydb -f administration/table_ownership.sql
 psql -d mydb -f administration/ForeignConst.sql
 psql -d mydb -f administration/extensions.sql
 psql -d mydb -f backup/backup_validation.sql
+psql -d mydb -f configuration/configuration_analysis.sql
 ```
 ### Security Audit
 ```bash
@@ -235,6 +283,34 @@ psql -d mydb -f security/permission_audit.sql
 ### Partition Management
 ```bash
 psql -d mydb -f administration/partition_management.sql
+```
+### Wait Event Analysis
+```bash
+psql -d mydb -f performance/wait_event_analysis.sql
+```
+### Query Performance Profiling
+```bash
+psql -d mydb -f performance/query_performance_profiler.sql
+```
+### Resource Monitoring
+```bash
+psql -d mydb -f performance/resource_monitoring.sql
+```
+### Configuration Analysis
+```bash
+psql -d mydb -f configuration/configuration_analysis.sql
+```
+### Parameter Tuning
+```bash
+./configuration/parameter_tuner.sh --mode recommend --workload oltp --ram 16GB
+```
+### Generate Grafana Dashboard
+```bash
+./integration/grafana_dashboard_generator.sh --type comprehensive -o dashboard.json
+```
+### Start Prometheus Exporter
+```bash
+./integration/prometheus_exporter.sh --port 9187 --daemon
 ```
 ## Contributing
 Contributions are welcome! Please:
@@ -308,9 +384,20 @@ monitoring/              # Performance and health monitoring
 ├── replication.sql      # Replication status and lag monitoring  
 └── txid.sql            # Transaction ID monitoring
 
-optimization/            # Performance optimization tools
+performance/            # Performance analysis and monitoring tools  
 ├── hot_update_optimization_checklist.sql  # HOT update analysis
-└── missing_indexes.sql  # Intelligent index recommendation engine
+├── missing_indexes.sql  # Intelligent index recommendation engine
+├── query_performance_profiler.sql         # Comprehensive query performance analysis
+├── resource_monitoring.sql                # System resource utilization monitoring
+└── wait_event_analysis.sql                # Wait event analysis and bottleneck identification
+
+configuration/          # Configuration management and tuning
+├── configuration_analysis.sql             # PostgreSQL configuration analysis
+└── parameter_tuner.sh                     # Interactive parameter tuning assistant
+
+integration/            # Monitoring system integration tools
+├── grafana_dashboard_generator.sh         # Grafana dashboard generator
+└── prometheus_exporter.sh                 # Custom Prometheus metrics exporter
 
 security/                # Security auditing and compliance
 └── permission_audit.sql # Enterprise-grade security audit
