@@ -2,7 +2,7 @@
 
 A collection of SQL scripts and utilities for monitoring, troubleshooting, and maintaining PostgreSQL databases.
 
-## � New to pgtools?
+## 👋 New to pgtools?
 
 **[👉 Get Started Here - Complete Beginner's Guide](GETTING-STARTED.md)**
 
