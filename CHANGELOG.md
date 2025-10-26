@@ -8,42 +8,68 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **NEW: Backup & Recovery Scripts**
+- Comprehensive workflow documentation with incident response procedures
+- Directory-specific README files with detailed usage examples
+- Annotated examples for all major scripts
+- Production readiness checklist and validation workflows
+
+### Changed
+- Enhanced main README.md with complete toolkit overview
+- Improved documentation structure and organization
+
+### Fixed
+- Minor formatting issues in existing scripts
+
+## [2.0.0] - 2025-10-25
+
+### Added
+- **Maintenance Automation Framework**
+  - `maintenance/auto_maintenance.sh` - Comprehensive automated maintenance operations
+  - `maintenance/maintenance_scheduler.sql` - Maintenance analysis and scheduling recommendations  
+  - `maintenance/statistics_collector.sql` - Statistics analysis and optimization
+  - `maintenance/README.md` - Complete maintenance automation documentation
+
+- **Enterprise Integration Tools**
+  - `integration/grafana_dashboard_generator.sh` - Automated Grafana dashboard creation
+  - `integration/prometheus_exporter.sh` - Custom PostgreSQL metrics exporter
   - `backup/backup_validation.sql` - Comprehensive backup health validation
-  - WAL archiving status and configuration analysis
-  - Backup strategy recommendations and automation suggestions
 
-- **NEW: Security Scripts**
-  - `security/permission_audit.sql` - Complete security audit framework
-  - Role hierarchy and privilege analysis
-  - Database, schema, and table-level security review
-  - Row Level Security (RLS) audit and recommendations
+- **Advanced Configuration Management**
+  - `configuration/configuration_analysis.sql` - PostgreSQL configuration analysis
+  - `configuration/parameter_tuner.sh` - Interactive parameter tuning assistant
+  - Environment-specific configuration optimization
 
-- **Enhanced Monitoring Scripts**
-  - `monitoring/connection_pools.sql` - Connection pooling analysis and optimization
-  - Connection leak detection and pool efficiency metrics
-  - PgBouncer and Pgpool-II compatibility
+- **Comprehensive Automation Framework**
+  - `automation/pgtools_health_check.sh` - Multi-format health reporting
+  - `automation/pgtools_scheduler.sh` - Cron job management and scheduling
+  - `automation/run_security_audit.sh` - Automated security audit runner
+  - `automation/cleanup_reports.sh` - Report cleanup and log rotation
+  - `automation/export_metrics.sh` - Metrics export for monitoring systems
+  - `automation/test_pgtools.sh` - Testing framework and validation
+  - `automation/README.md` - Complete automation framework documentation
 
-- **Enhanced Optimization Scripts**
-  - `optimization/missing_indexes.sql` - Advanced index recommendation engine
-  - Sequential scan analysis and unused index detection
-  - Foreign key index validation and suggestions
+- **Enhanced Performance Analysis**
+  - `performance/query_performance_profiler.sql` - Detailed query performance analysis
+  - `performance/wait_event_analysis.sql` - Wait event analysis and bottleneck identification
+  - `performance/resource_monitoring.sql` - System resource utilization monitoring
+  - `optimization/missing_indexes.sql` - Intelligent index recommendation engine
 
-- **Enhanced Administration Scripts**
+- **Security and Administration**
+  - `security/permission_audit.sql` - Enterprise-grade security audit
   - `administration/partition_management.sql` - Comprehensive partition lifecycle management
-  - Partition health monitoring and balance analysis
-  - Automated partition maintenance recommendations
+  - `monitoring/connection_pools.sql` - Connection pooling efficiency analysis
 
-- Comprehensive README with usage examples and best practices
-- Standardized header comments for all SQL scripts including:
-  - Purpose and description
-  - Usage instructions
-  - PostgreSQL version requirements
-  - Required privileges
-  - Output description
-  - Important notes and warnings
-- This CHANGELOG file to track project changes
-- Script organization into logical folder structure
+- **Operational Workflows**
+  - `workflows/README.md` - Comprehensive operational workflows and procedures
+  - Incident response checklists and automation
+  - Daily, weekly, and monthly maintenance procedures
+  - Production readiness validation workflows
+
+- **Enhanced Documentation**
+  - `monitoring/README.md` - Detailed monitoring scripts documentation
+  - `administration/README.md` - Complete administration tools guide
+  - Directory-specific README files with usage examples
+  - Annotated script examples and output samples
 
 ### Changed
 - Reorganized scripts into logical folders:

@@ -1,50 +1,250 @@
 # Contributing to pgtools
 
-Thank you for your interest in contributing to pgtools!
+We welcome contributions from the PostgreSQL community! This document provides comprehensive guidelines for contributing to the pgtools project.
 
-## How to Contribute
+## 📋 Quick Start
 
-### Reporting Issues
-- Check if the issue already exists
-- Provide PostgreSQL version and OS information
-- Include error messages and query output
-- Describe expected vs actual behavior
+### Prerequisites
+- PostgreSQL knowledge (administration, performance tuning, or development)
+- Basic understanding of SQL and shell scripting
+- Familiarity with Git and GitHub workflows
+- Access to PostgreSQL test environment for script validation
 
-### Submitting Scripts
+### Getting Started
+```bash
+# Fork the repository on GitHub
+# Clone your fork
+git clone https://github.com/your-username/pgtools.git
+cd pgtools
 
-1. **Before submitting:**
-   - Test on PostgreSQL 10+ (minimum supported version if different)
-   - Ensure script handles errors gracefully
-   - Verify privilege requirements are minimal
+# Create development branch
+git checkout -b feature/your-feature-name
 
-2. **Script requirements:**
-   - Add standardized header comment (see existing scripts)
-   - Place in appropriate folder
-   - Use clear, descriptive names
-   - Include output examples in comments
+# Test current scripts in your environment
+./automation/test_pgtools.sh --database your_test_db
+```
 
-3. **Code style:**
-   - Use uppercase for SQL keywords (SELECT, FROM, WHERE)
-   - Indent with 4 spaces
-   - Add comments for complex logic
-   - Sort results logically (by severity, size, etc.)
+## Types of Contributions
 
-4. **Pull request process:**
-   - Update README.md with new script description
-   - Add entry to CHANGELOG.md under [Unreleased]
-   - Describe what problem the script solves
-   - Include testing details
+### 🔧 New Scripts and Tools
+**What we're looking for:**
+- Monitoring scripts for specific PostgreSQL features
+- Performance analysis tools
+- Administration utilities  
+- Security audit scripts
+- Troubleshooting aids
+- Automation tools
 
-### Testing
-- Test on clean PostgreSQL installations
-- Verify on different versions if possible
-- Check with various permission levels
-- Test on databases with/without data
+### 📚 Documentation and Examples
+**What we need:**
+- Real-world usage examples
+- Industry-specific workflows
+- Troubleshooting scenarios
+- Configuration best practices
+- Performance tuning guides
 
-## Code of Conduct
+### 🐛 Bug Fixes and Improvements
+**Areas for improvement:**
+- PostgreSQL version compatibility
+- Performance optimization of existing scripts
+- Output formatting enhancements
+- Error handling improvements
+- Cross-platform compatibility
 
-Be respectful, constructive, and professional in all interactions.
+### 🔄 Workflow Contributions
+**Operational workflows we'd love to see:**
+- Disaster recovery procedures
+- Maintenance automation
+- Monitoring integration guides
+- Incident response playbooks
+- Compliance audit procedures
+
+## Script Standards
+
+### Required Header Format
+Every script must include a comprehensive header:
+
+```sql
+/*
+ * Script: script_name.sql
+ * Purpose: Brief description of what the script does
+ * 
+ * ANNOTATED EXAMPLE:
+ *   # Basic usage
+ *   psql -d database_name -f path/to/script.sql
+ *
+ *   # Advanced usage with filtering
+ *   psql -d database_name -f path/to/script.sql | grep "CRITICAL"
+ *
+ * SAMPLE OUTPUT:
+ *   column1    | column2      | column3     | description
+ *   -----------|--------------|-------------|-------------
+ *   value1     | value2       | value3      | Sample data row
+ *
+ * INTERPRETATION:
+ *   - Explain what different output values mean
+ *   - Describe normal vs. concerning values
+ *   - Provide actionable guidance
+ *
+ * Requirements:
+ *   - PostgreSQL version (e.g., 10+, 12+)
+ *   - Required privileges (e.g., pg_monitor role)
+ *   - Required extensions (e.g., pg_stat_statements)
+ *
+ * Author: Your Name <your.email@company.com>
+ * Version: 1.0
+ * Last Modified: YYYY-MM-DD
+ */
+```
+
+### Code Style Guidelines
+```sql
+-- Use clear, descriptive column aliases
+SELECT 
+    schemaname AS schema_name,
+    tablename AS table_name,
+    pg_size_pretty(pg_relation_size(schemaname||'.'||tablename)) AS size
+FROM pg_tables
+WHERE schemaname NOT IN ('pg_catalog', 'information_schema')
+ORDER BY pg_relation_size(schemaname||'.'||tablename) DESC
+LIMIT 50;
+```
+
+## Testing Requirements
+
+### PostgreSQL Version Compatibility
+Test your scripts across supported PostgreSQL versions (10, 11, 12, 13, 14, 15):
+
+```bash
+# Use Docker for testing different versions
+docker run -d --name pg10-test -e POSTGRES_PASSWORD=test postgres:10-alpine
+docker run -d --name pg15-test -e POSTGRES_PASSWORD=test postgres:15-alpine
+
+# Test your script
+psql -h localhost -p 5432 -U postgres -d postgres -f your_script.sql
+```
+
+### Test Checklist
+- [ ] Script executes without errors on PostgreSQL 10+
+- [ ] Output is properly formatted and readable
+- [ ] Script handles edge cases (empty tables, no data, etc.)
+- [ ] Performance is acceptable on databases with 1M+ rows
+- [ ] Required privileges are minimal and documented
+- [ ] Script works with both superuser and limited privileges (where applicable)
+
+## Submission Process
+
+### Pull Request Guidelines
+
+1. **Create Feature Branch**
+   ```bash
+   git checkout -b feature/descriptive-name
+   ```
+
+2. **Make Your Changes**
+   - Follow coding standards
+   - Add comprehensive tests
+   - Update documentation
+   - Include usage examples
+
+3. **Test Thoroughly**
+   ```bash
+   # Run existing test suite
+   ./automation/test_pgtools.sh
+   
+   # Test your specific changes
+   psql -d test_db -f your_new_script.sql
+   ```
+
+4. **Submit Pull Request**
+   - Use descriptive title
+   - Include detailed description
+   - Reference any related issues
+   - Update CHANGELOG.md
+   - Update relevant README files
+
+### Pull Request Template
+```markdown
+## Description
+Brief description of changes and motivation.
+
+## Type of Change
+- [ ] Bug fix (non-breaking change that fixes an issue)
+- [ ] New feature (non-breaking change that adds functionality)
+- [ ] Documentation update
+- [ ] Workflow improvement
+
+## Testing
+- [ ] Tested on PostgreSQL 10+
+- [ ] Tested with sample data
+- [ ] Performance tested on large dataset
+- [ ] Documentation examples verified
+
+## Checklist
+- [ ] Code follows project style guidelines
+- [ ] Documentation updated
+- [ ] CHANGELOG.md updated
+- [ ] No breaking changes (or properly documented)
+```
+
+## Documentation Standards
+
+### README Updates
+When adding new scripts, update the relevant README files:
+
+1. **Main README.md**: Add script to appropriate category
+2. **Directory README.md**: Add detailed description and examples
+3. **CHANGELOG.md**: Document your additions
+
+### Example Documentation
+```markdown
+#### `your_new_script.sql`
+**Purpose:** Brief description of what the script does
+**Use Cases:**
+- Specific use case 1
+- Specific use case 2
+
+**Sample Output:**
+\`\`\`
+column1    | column2    | description
+-----------|------------|-------------
+value1     | value2     | Sample data
+\`\`\`
+
+**Alert Thresholds:**
+- **Critical:** > X (immediate action required)
+- **Warning:** X-Y (monitor closely)
+- **Normal:** < Y (no action needed)
+```
+
+## Community Guidelines
+
+### Code of Conduct
+- **Be respectful** and inclusive in all interactions
+- **Help newcomers** learn PostgreSQL and contribute effectively
+- **Provide constructive feedback** in reviews and discussions
+- **Share knowledge** and learn from others' experiences
+
+### Getting Help
+**New to PostgreSQL?**
+- Check [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+- Review existing pgtools scripts for patterns
+- Ask questions in GitHub Issues
+
+**Need help with implementation?**
+- Open a draft PR for early feedback
+- Ask for help in GitHub Discussions
+- Reference similar existing scripts
+
+## Recognition
+
+Contributors will be recognized in:
+- **Release notes**: Major contributions highlighted
+- **Script headers**: Author attribution in contributed scripts
+- **Community showcase**: Outstanding contributions featured
 
 ## Questions?
 
-Open an issue with the "question" label.
+Open an issue with the "question" label or start a discussion in GitHub Discussions.
+
+Thank you for contributing to pgtools! Your expertise helps make PostgreSQL administration easier for the entire community.

@@ -358,11 +358,7 @@ psql -d mydb -f maintenance/maintenance_scheduler.sql
 psql -d mydb -f maintenance/statistics_collector.sql
 ```
 ## Contributing
-Contributions are welcome! Please:
-1. Test your scripts thoroughly
-2. Add clear comments explaining what each query does
-3. Include usage examples in script headers
-4. Update this README with new scripts
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ## Automation Framework
 
