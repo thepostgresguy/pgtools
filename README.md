@@ -8,7 +8,7 @@ A collection of SQL scripts and utilities for monitoring, troubleshooting, and m
 
 Perfect for new users! This comprehensive guide walks you through installation, first steps, essential workflows, and automation setup.
 
-##  Table of Contents
+## 📋 Table of Contents
 
 - [Overview](#overview)
 - [Script Categories](#script-categories)
