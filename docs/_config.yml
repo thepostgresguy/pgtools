@@ -1,0 +1,47 @@
+title: pgtools Documentation
+description: A collection of SQL scripts and utilities for monitoring, troubleshooting, and maintaining PostgreSQL databases
+theme: jekyll-theme-cayman
+show_downloads: true
+
+# GitHub repository
+repository: gmartinez-dbai/pgtools
+
+# Navigation
+navigation:
+  - title: Home
+    url: /
+  - title: Monitoring
+    url: /monitoring
+  - title: Automation
+    url: /automation
+  - title: Maintenance
+    url: /maintenance
+  - title: Administration
+    url: /administration
+  - title: Workflows
+    url: /workflows
+  - title: Transaction Wraparound
+    url: /transaction-wraparound
+
+# Markdown settings
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+  syntax_highlighter: rouge
+
+# Plugins
+plugins:
+  - jekyll-github-metadata
+  - jekyll-relative-links
+
+# Relative links configuration
+relative_links:
+  enabled: true
+  collections: false
+
+# Exclude files from processing
+exclude:
+  - vendor
+  - Gemfile
+  - Gemfile.lock

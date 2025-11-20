@@ -16,7 +16,7 @@ Perfect for new users! This comprehensive guide walks you through installation, 
 - [Contributing](#contributing)
 - [License](#license)
 
-## Overview
+### Quick Links
 
 This toolkit provides battle-tested SQL scripts for PostgreSQL database administrators and developers to:
 - Monitor database health and performance
@@ -242,210 +242,29 @@ psql -U postgres -d mydb -f backup/backup_validation.sql
 ```bash
 psql -U postgres -d mydb -f monitoring/connection_pools.sql
 ```
-### Find missing indexes
-```bash
-psql -U postgres -d mydb -f optimization/missing_indexes.sql
-```
-### Security audit
-```bash
-psql -U postgres -d mydb -f security/permission_audit.sql
-```
-### Run automated maintenance
-```bash
-# Automated VACUUM/ANALYZE with intelligent thresholds
-./maintenance/auto_maintenance.sh --operation auto --verbose
 
-# Generate maintenance scheduling analysis
-psql -U postgres -d mydb -f maintenance/maintenance_scheduler.sql
+## Script Categories
 
-# Analyze statistics quality and optimization
-psql -U postgres -d mydb -f maintenance/statistics_collector.sql
-```
-## Best Practices
-1. **Test in non-production first**: Always test scripts in development/staging before running in production
-2. **Check privileges**: Ensure you have necessary permissions before running scripts
-3. **Monitor impact**: Some queries may be resource-intensive on large databases
-4. **Regular monitoring**: Schedule regular runs of monitoring scripts for proactive maintenance
-5. **Review before execution**: Always review script contents before running
+- **Monitoring** - Database health, locks, replication, bloating
+- **Maintenance** - VACUUM, ANALYZE, statistics collection
+- **Automation** - Health checks, scheduling, alerting
+- **Administration** - Extensions, ownership, constraints, partitions
+- **Optimization** - Index recommendations, HOT updates, missing indexes
+- **Performance** - Query profiling, wait events, resource monitoring
+- **Security** - Permission audits, compliance checks
+- **Troubleshooting** - Diagnostic queries and cheat sheets
+- **Backup & Recovery** - Backup validation and integrity checks
+- **Configuration** - Parameter tuning and analysis
+- **Integration** - Grafana dashboards, Prometheus exporters
 
-## Common Use Cases
-### Daily Health Check
-```bash
-psql -d mydb -f monitoring/locks.sql
-psql -d mydb -f monitoring/replication.sql
-psql -d mydb -f monitoring/txid.sql
-psql -d mydb -f monitoring/connection_pools.sql
-./maintenance/auto_maintenance.sh --operation auto --verbose
-```
-### Performance Investigation
-```bash
-psql -d mydb -f monitoring/bloating.sql
-psql -d mydb -f monitoring/buffer_troubleshoot.sql
-psql -d mydb -f optimization/missing_indexes.sql
-psql -d mydb -f performance/query_performance_profiler.sql
-psql -d mydb -f performance/wait_event_analysis.sql
-psql -d mydb -f troubleshooting/postgres_troubleshooting_queries.sql
-```
-### Before Major Changes
-```bash
-psql -d mydb -f administration/table_ownership.sql
-psql -d mydb -f administration/ForeignConst.sql
-psql -d mydb -f administration/extensions.sql
-psql -d mydb -f backup/backup_validation.sql
-psql -d mydb -f configuration/configuration_analysis.sql
-```
-### Security Audit
-```bash
-psql -d mydb -f security/permission_audit.sql
-```
-### Partition Management
-```bash
-psql -d mydb -f administration/partition_management.sql
-```
-### Wait Event Analysis
-```bash
-psql -d mydb -f performance/wait_event_analysis.sql
-```
-### Query Performance Profiling
-```bash
-psql -d mydb -f performance/query_performance_profiler.sql
-```
-### Resource Monitoring
-```bash
-psql -d mydb -f performance/resource_monitoring.sql
-```
-### Configuration Analysis
-```bash
-psql -d mydb -f configuration/configuration_analysis.sql
-```
-### Parameter Tuning
-```bash
-./configuration/parameter_tuner.sh --mode recommend --workload oltp --ram 16GB
-```
-### Generate Grafana Dashboard
-```bash
-./integration/grafana_dashboard_generator.sh --type comprehensive -o dashboard.json
-```
-### Start Prometheus Exporter
-```bash
-./integration/prometheus_exporter.sh --port 9187 --daemon
-```
-### Maintenance Automation
-```bash
-# Run automated maintenance with intelligent thresholds
-./maintenance/auto_maintenance.sh --operation auto --dry-run
-
-# VACUUM tables with >15% dead tuples, using 4 parallel jobs
-./maintenance/auto_maintenance.sh --operation vacuum --dead-threshold 15 --parallel 4
-
-# Generate comprehensive maintenance analysis
-psql -d mydb -f maintenance/maintenance_scheduler.sql
-
-# Analyze statistics quality for optimization
-psql -d mydb -f maintenance/statistics_collector.sql
-```
 ## Contributing
+
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
-## Automation Framework
-
-The `automation/` directory provides a complete operational framework for pgtools:
-
-- **`pgtools_health_check.sh`** - Comprehensive automation wrapper with multi-format reporting
-- **`pgtools_scheduler.sh`** - Cron job management and scheduling
-- **`run_security_audit.sh`** - Automated security audit runner  
-- **`cleanup_reports.sh`** - Report cleanup and log rotation
-- **`export_metrics.sh`** - Metrics export for Prometheus/Grafana
-- **`test_pgtools.sh`** - Testing framework and validation
-
-### Quick Automation Setup
-```bash
-# Configure automation
-cp automation/pgtools.conf.example automation/pgtools.conf
-edit automation/pgtools.conf
-
-# Install automated monitoring
-./automation/pgtools_scheduler.sh install
-
-# Run comprehensive health check
-./automation/pgtools_health_check.sh --format html --email
-```
-
-See `automation/README.md` for complete documentation.
-
-## Directory Structure
-
-```
-administration/           # Database administration utilities
-├── extensions.sql       # Extension management queries
-├── ForeignConst.sql     # Foreign key constraint analysis  
-├── NonHypertables.sql   # TimescaleDB hypertable identification
-├── partition_management.sql  # Comprehensive partition lifecycle management
-└── table_ownership.sql  # Table ownership and permission queries
-
-automation/              # Automation and operational integration
-├── cleanup_reports.sh   # Report cleanup and log rotation
-├── export_metrics.sh    # Metrics export for monitoring systems
-├── pgtools.conf.example # Configuration template
-├── pgtools_health_check.sh  # Comprehensive health check automation
-├── pgtools_scheduler.sh # Cron job management and scheduling
-├── README.md           # Automation framework documentation
-├── run_security_audit.sh    # Automated security audit runner
-└── test_pgtools.sh     # Testing framework and validation
-
-backup/                  # Backup validation and monitoring
-└── backup_validation.sql    # Comprehensive backup health validation
-
-maintenance/             # Database maintenance and automation
-├── auto_maintenance.sh       # Comprehensive automated maintenance operations
-├── maintenance_scheduler.sql # Maintenance analysis and scheduling recommendations
-├── statistics_collector.sql  # Statistics analysis and optimization
-├── switch_pg_wal_file.sql    # WAL file rotation
-├── walfile_in_use.sql        # Current WAL file information
-├── README.md                # Maintenance automation framework documentation
-└── Transaction Wraparound/    # Transaction wraparound monitoring
-    ├── queries.sql
-    └── README.md
-
-monitoring/              # Performance and health monitoring
-├── bloating.sql         # Table and index bloat detection
-├── buffer_troubleshoot.sql   # Buffer pool analysis
-├── connection_pools.sql # Connection pooling efficiency analysis
-├── locks.sql            # Lock monitoring and analysis
-├── postgres_locking_blocking.sql  # Blocking query identification
-├── replication.sql      # Replication status and lag monitoring  
-└── txid.sql            # Transaction ID monitoring
-
-performance/            # Performance analysis and monitoring tools  
-├── hot_update_optimization_checklist.sql  # HOT update analysis
-├── missing_indexes.sql  # Intelligent index recommendation engine
-├── query_performance_profiler.sql         # Comprehensive query performance analysis
-├── resource_monitoring.sql                # System resource utilization monitoring
-└── wait_event_analysis.sql                # Wait event analysis and bottleneck identification
-
-configuration/          # Configuration management and tuning
-├── configuration_analysis.sql             # PostgreSQL configuration analysis
-└── parameter_tuner.sh                     # Interactive parameter tuning assistant
-
-integration/            # Monitoring system integration tools
-├── grafana_dashboard_generator.sh         # Grafana dashboard generator
-└── prometheus_exporter.sh                 # Custom Prometheus metrics exporter
-
-security/                # Security auditing and compliance
-└── permission_audit.sql # Enterprise-grade security audit
-
-troubleshooting/         # Diagnostic and troubleshooting queries
-├── postgres_troubleshooting_cheat_sheet.txt     # Quick reference guide
-├── postgres_troubleshooting_queries.sql         # General diagnostic queries
-├── postgres_troubleshooting_query_pack_01.sql   # Focused query set 1
-├── postgres_troubleshooting_query_pack_02.sql   # Focused query set 2
-└── postgres_troubleshooting_query_pack_03.sql   # Focused query set 3
-```
-
 ## License
-See LICENSE file for details.
+
+See [LICENSE](LICENSE) file for details.
 
 ## Support
-For issues, questions, or contributions, please open an issue in the repository.
 
-**Note**: These scripts are provided as-is. Always review and test scripts in a non-production environment before using them on production databases.
+For issues, questions, or contributions, please open an issue in the repository.
