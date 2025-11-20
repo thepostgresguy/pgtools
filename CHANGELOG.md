@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `GETTING-STARTED.md` - Comprehensive beginner's guide with installation, first steps, and workflow examples
+- README.md updated with prominent link to getting started guide for new users
+
+### Fixed
+- Removed duplicate "Quick Start" section from README.md to eliminate redundancy with comprehensive getting started guide
+- Streamlined README.md table of contents by removing redundant sections
+
 ## [1.0.0] - 2025-10-25
 
 ### Added
