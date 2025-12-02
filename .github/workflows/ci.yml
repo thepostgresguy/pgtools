@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "chore/**", "feature/**", "fix/**"]
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    env:
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: postgres
+      PGDATABASE: postgres
+      PGPASSWORD: postgres
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck jq postgresql-client
+
+      - name: Wait for PostgreSQL
+        run: |
+          for i in {1..10}; do
+            if pg_isready -h "$PGHOST" -p "$PGPORT" -U "$PGUSER"; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "PostgreSQL did not become ready in time" >&2
+          exit 1
+
+      - name: ShellCheck automation scripts
+        run: shellcheck automation/*.sh
+
+      - name: Fast automation test suite
+        run: ./automation/test_pgtools.sh --fast
+
+      - name: HOT checklist JSON validation
+        run: ./automation/run_hot_update_report.sh --format json --database "$PGDATABASE" --stdout
+
+      - name: HOT checklist text validation
+        run: ./automation/run_hot_update_report.sh --format text --database "$PGDATABASE" --stdout

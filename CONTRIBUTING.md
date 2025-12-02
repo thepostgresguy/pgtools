@@ -22,6 +22,9 @@ git checkout -b feature/your-feature-name
 
 # Test current scripts in your environment
 ./automation/test_pgtools.sh --database your_test_db
+
+# Optional: run the full local pre-commit bundle
+./scripts/precommit_checks.sh --database your_test_db
 ```
 
 ## Types of Contributions
@@ -154,6 +157,9 @@ psql -h localhost -p 5432 -U postgres -d postgres -f your_script.sql
    
    # Test your specific changes
    psql -d test_db -f your_new_script.sql
+   
+   # Recommended: mirror CI locally
+   ./scripts/precommit_checks.sh --database test_db
    ```
 
 4. **Submit Pull Request**
