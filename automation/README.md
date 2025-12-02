@@ -12,6 +12,7 @@ This directory contains automation scripts for pgtools:
 - `cleanup_reports.sh` - Report cleanup and log rotation
 - `export_metrics.sh` - Metrics export for monitoring systems
 - `test_pgtools.sh` - Testing framework and validation
+- `run_hot_update_report.sh` - HOT update checklist (text or JSON)
 - `pgtools.conf.example` - Configuration template
 
 ## Quick Start
