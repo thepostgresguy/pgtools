@@ -243,6 +243,21 @@ psql -U postgres -d mydb -f backup/backup_validation.sql
 psql -U postgres -d mydb -f monitoring/connection_pools.sql
 ```
 
+### Automation / HOT report verification
+```bash
+# Quick automation sanity check (connection, syntax, permissions)
+./automation/test_pgtools.sh --fast
+
+# Full automation suite with integration tests
+./automation/test_pgtools.sh --full --verbose
+
+# HOT checklist JSON validation
+./automation/run_hot_update_report.sh --format json --database my_database --stdout
+
+# HOT checklist text validation
+./automation/run_hot_update_report.sh --format text --database my_database --stdout
+```
+
 ## Script Categories
 
 - **Monitoring** - Database health, locks, replication, bloating

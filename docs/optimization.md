@@ -36,6 +36,21 @@ Single entrypoint that emits either JSON (default) or text.
 - JSON mode validates results via `jq` (falls back to `python3 -m json.tool`).
 - Text mode mirrors the manual SQL output and can stream to stdout with `--stdout`.
 
+**Verification commands:**
+```bash
+# Quick automation sanity test
+./automation/test_pgtools.sh --fast
+
+# Full automation suite (adds integration tests)
+./automation/test_pgtools.sh --full --verbose
+
+# Validate HOT checklist JSON path
+./automation/run_hot_update_report.sh --format json --database my_database --stdout
+
+# Validate HOT checklist text path
+./automation/run_hot_update_report.sh --format text --database my_database --stdout
+```
+
 #### Connection configuration
 1. Copy the sample config: `cp automation/pgtools.conf.example automation/pgtools.conf`.
 2. Edit `automation/pgtools.conf` and set the standard libpq variables:

@@ -236,6 +236,21 @@ PGHOST=staging-db ./automation/run_hot_update_report.sh --format text --stdout
 ./automation/run_hot_update_report.sh --format json --output /tmp/hot_update.json
 ```
 
+**Regression tests:**
+```bash
+# Quick automation sanity check (connection, syntax, permissions)
+./automation/test_pgtools.sh --fast
+
+# Full automation suite with integration runs (requires DB access)
+./automation/test_pgtools.sh --full --verbose
+
+# Verify HOT JSON path end-to-end
+./automation/run_hot_update_report.sh --format json --database my_database --stdout
+
+# Verify HOT text path
+./automation/run_hot_update_report.sh --format text --database my_database --stdout
+```
+
 ## Configuration Reference
 
 The `pgtools.conf` file controls all automation behavior:

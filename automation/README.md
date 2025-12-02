@@ -27,6 +27,24 @@ cp automation/pgtools.conf.example automation/pgtools.conf
 
 For detailed usage and configuration options, please refer to the complete documentation linked above.
 
+## Verification commands
+
+Run these before committing changes to automation scripts or HOT reporting logic:
+
+```bash
+# Quick sanity check (connection, syntax, permissions)
+./automation/test_pgtools.sh --fast
+
+# Full automation suite with integration tests
+./automation/test_pgtools.sh --full --verbose
+
+# Verify HOT JSON workflow
+./automation/run_hot_update_report.sh --format json --database my_database --stdout
+
+# Verify HOT text workflow
+./automation/run_hot_update_report.sh --format text --database my_database --stdout
+```
+
 ## Connection configuration
 
 Most automation scripts, including `run_hot_update_report.sh`, source `automation/pgtools.conf` for their database settings.
