@@ -36,6 +36,20 @@ Single entrypoint that emits either JSON (default) or text.
 - JSON mode validates results via `jq` (falls back to `python3 -m json.tool`).
 - Text mode mirrors the manual SQL output and can stream to stdout with `--stdout`.
 
+#### Connection configuration
+1. Copy the sample config: `cp automation/pgtools.conf.example automation/pgtools.conf`.
+2. Edit `automation/pgtools.conf` and set the standard libpq variables:
+   ```bash
+   PGHOST=db-server.example.com
+   PGPORT=5432
+   PGUSER=monitoring_user
+   PGDATABASE=postgres    # default database used when --database is not passed
+   # PGPASSWORD is optional; prefer ~/.pgpass for credentials
+   ```
+3. The script sources this file at runtime, so every `psql` command inherits those values automatically.
+
+**Precedence:** command-line flags > environment variables > `pgtools.conf`. For example, running `./automation/run_hot_update_report.sh --database analytics` targets the `analytics` database while still using `PGHOST`/`PGPORT`/`PGUSER` from `pgtools.conf`. To override the server, export an environment variable before invoking the script (`PGHOST=staging-db ./automation/run_hot_update_report.sh`). If neither CLI nor environment overrides are provided, the values defined in `pgtools.conf` are used.
+
 ## iqtoolkit-analyzer Integration
 1. Run `automation/run_hot_update_report.sh --format json` against the target database.
 2. Copy the generated file (e.g., `reports/hot_update_20251202_101500.json`) into the analyzer repo’s intake folder (`/path/to/iqtoolkit-analyzer/samples/`).

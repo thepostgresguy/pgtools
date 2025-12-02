@@ -12,7 +12,7 @@ This directory contains automation scripts for pgtools:
 - `cleanup_reports.sh` - Report cleanup and log rotation
 - `export_metrics.sh` - Metrics export for monitoring systems
 - `test_pgtools.sh` - Testing framework and validation
-- `run_hot_update_report.sh` - HOT update checklist (text or JSON)
+- `run_hot_update_report.sh` - HOT update checklist (text or JSON, reads connection defaults from pgtools.conf)
 - `pgtools.conf.example` - Configuration template
 
 ## Quick Start
@@ -26,3 +26,16 @@ cp automation/pgtools.conf.example automation/pgtools.conf
 ```
 
 For detailed usage and configuration options, please refer to the complete documentation linked above.
+
+## Connection configuration
+
+Most automation scripts, including `run_hot_update_report.sh`, source `automation/pgtools.conf` for their database settings.
+
+1. Copy the template: `cp automation/pgtools.conf.example automation/pgtools.conf`.
+2. Populate standard libpq variables (PGHOST, PGPORT, PGUSER, PGDATABASE, optional PGPASSWORD or ~/.pgpass).
+3. Override as needed:
+	- Command-line flags have highest priority (`--database analytics`).
+	- Environment variables (e.g., `PGHOST=staging-db`) override the config.
+	- Values in `pgtools.conf` act as defaults when nothing else is provided.
+
+This precedence keeps existing automation jobs stable while still letting ad-hoc runs target alternate servers or databases.

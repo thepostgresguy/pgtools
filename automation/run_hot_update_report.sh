@@ -34,6 +34,10 @@ Options:
   -s, --stdout           Print report to stdout after generation
   -q, --quiet            Skip helper text
   -h, --help             Show this help
+
+Connection precedence:
+    CLI flags > environment variables (PGHOST, PGPORT, PGUSER, PGDATABASE, PGPASSWORD)
+    > automation/pgtools.conf defaults.
 EOF
 }
 
