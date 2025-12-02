@@ -49,6 +49,9 @@ Single entrypoint that emits either JSON (default) or text.
 
 # Validate HOT checklist text path
 ./automation/run_hot_update_report.sh --format text --database my_database --stdout
+
+# Run the entire bundle (shellcheck + automation + HOT)
+./scripts/precommit_checks.sh --database my_database
 ```
 
 #### Connection configuration

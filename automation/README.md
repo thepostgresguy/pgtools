@@ -13,6 +13,7 @@ This directory contains automation scripts for pgtools:
 - `export_metrics.sh` - Metrics export for monitoring systems
 - `test_pgtools.sh` - Testing framework and validation
 - `run_hot_update_report.sh` - HOT update checklist (text or JSON, reads connection defaults from pgtools.conf)
+- `scripts/precommit_checks.sh` - Local helper mirroring CI sanity checks
 - `pgtools.conf.example` - Configuration template
 
 ## Quick Start
@@ -43,6 +44,9 @@ Run these before committing changes to automation scripts or HOT reporting logic
 
 # Verify HOT text workflow
 ./automation/run_hot_update_report.sh --format text --database my_database --stdout
+
+# Full local bundle (shellcheck + automation + HOT)
+./scripts/precommit_checks.sh --database my_database
 ```
 
 ## Connection configuration

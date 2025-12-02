@@ -256,6 +256,9 @@ psql -U postgres -d mydb -f monitoring/connection_pools.sql
 
 # HOT checklist text validation
 ./automation/run_hot_update_report.sh --format text --database my_database --stdout
+
+# Full local pre-commit bundle
+./scripts/precommit_checks.sh --database my_database
 ```
 
 ## Script Categories

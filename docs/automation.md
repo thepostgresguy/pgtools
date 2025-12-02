@@ -12,6 +12,7 @@ This directory contains automation scripts and tools to operationalize the pgtoo
 - **`export_metrics.sh`** - Metrics export for monitoring systems (Prometheus, Grafana, etc.)
 - **`test_pgtools.sh`** - Testing framework and validation suite
 - **`run_hot_update_report.sh`** - HOT update checklist exporter (text or JSON)
+- **`scripts/precommit_checks.sh`** - Mirrors CI validation locally
 
 ### Configuration
 - **`pgtools.conf.example`** - Configuration template with all available settings
@@ -65,6 +66,9 @@ chmod +x automation/*.sh
 
 # HOT report (text)
 ./automation/run_hot_update_report.sh --format text --stdout
+
+# Full pre-commit bundle
+./scripts/precommit_checks.sh --database my_database
 ```
 
 ## Script Details
@@ -234,6 +238,9 @@ PGHOST=staging-db ./automation/run_hot_update_report.sh --format text --stdout
 
 # Save to a custom location
 ./automation/run_hot_update_report.sh --format json --output /tmp/hot_update.json
+
+# Combine all checks before committing
+./scripts/precommit_checks.sh --database my_database
 ```
 
 **Regression tests:**
