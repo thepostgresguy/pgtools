@@ -10,7 +10,6 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PGTOOLS_ROOT="$(dirname "$SCRIPT_DIR")"
 
 # Color codes
 RED='\033[0;31m'
@@ -62,11 +61,13 @@ EOF
 # Load configuration
 CONFIG_FILE="$SCRIPT_DIR/pgtools.conf"
 if [[ -f "$CONFIG_FILE" ]]; then
+    # shellcheck source=automation/pgtools.conf
     source "$CONFIG_FILE"
 else
     warn "Configuration file not found: $CONFIG_FILE"
     warn "Using defaults and example configuration"
     if [[ -f "$SCRIPT_DIR/pgtools.conf.example" ]]; then
+        # shellcheck source=automation/pgtools.conf.example
         source "$SCRIPT_DIR/pgtools.conf.example"
     fi
 fi
@@ -108,7 +109,8 @@ install_cron_jobs() {
     fi
     
     # Generate temporary cron file
-    local temp_cron=$(mktemp)
+    local temp_cron
+    temp_cron=$(mktemp)
     
     # Get existing crontab (excluding pgtools entries)
     if crontab -l > /dev/null 2>&1; then
@@ -147,7 +149,8 @@ remove_cron_jobs() {
     crontab -l > "$SCRIPT_DIR/crontab.backup.$(date +%Y%m%d_%H%M%S)"
     
     # Generate temporary cron file without pgtools entries
-    local temp_cron=$(mktemp)
+    local temp_cron
+    temp_cron=$(mktemp)
     crontab -l | grep -v "PostgreSQL Tools" | grep -v "pgtools" > "$temp_cron" || true
     
     # Install cleaned crontab

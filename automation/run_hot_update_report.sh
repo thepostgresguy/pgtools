@@ -41,7 +41,10 @@ Connection precedence:
 EOF
 }
 
-[[ -f "$CONFIG_FILE" ]] && source "$CONFIG_FILE"
+if [[ -f "$CONFIG_FILE" ]]; then
+    # shellcheck source=automation/pgtools.conf
+    source "$CONFIG_FILE"
+fi
 
 FORMAT="json"
 DB_NAME="${PGDATABASE:-postgres}"

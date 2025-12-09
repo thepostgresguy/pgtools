@@ -61,6 +61,7 @@ EOF
 # Load configuration
 CONFIG_FILE="$SCRIPT_DIR/pgtools.conf"
 if [[ -f "$CONFIG_FILE" ]]; then
+    # shellcheck source=automation/pgtools.conf
     source "$CONFIG_FILE"
 fi
 
@@ -185,10 +186,15 @@ EOF
 
 # Run security audit
 run_audit() {
-    local temp_output=$(mktemp)
+    local temp_output
+    temp_output=$(mktemp)
     
     if [[ "$VERBOSE" == "true" ]]; then
         log "Running security audit..."
+    fi
+
+    if [[ "$INCLUDE_RECOMMENDATIONS" != "true" ]]; then
+        log "Recommendations section disabled for this run"
     fi
     
     # Execute the security audit SQL
@@ -262,8 +268,10 @@ send_email_notification() {
         log "Sending email notification..."
     fi
     
-    local subject="PostgreSQL Security Audit Report - $(date +%Y-%m-%d)"
-    local email_body="PostgreSQL Security Audit completed.
+    local subject
+    subject="PostgreSQL Security Audit Report - $(date +%Y-%m-%d)"
+    local email_body
+    email_body="PostgreSQL Security Audit completed.
 
 Database: ${PGDATABASE:-default}
 Host: ${PGHOST:-localhost}:${PGPORT:-5432}

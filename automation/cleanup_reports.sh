@@ -31,6 +31,7 @@ COMPRESS_OLD="true"
 # Load configuration
 CONFIG_FILE="$SCRIPT_DIR/pgtools.conf"
 if [[ -f "$CONFIG_FILE" ]]; then
+    # shellcheck source=automation/pgtools.conf
     source "$CONFIG_FILE"
     KEEP_DAYS="${PGTOOLS_KEEP_REPORTS_DAYS:-$KEEP_DAYS}"
 fi
@@ -180,7 +181,8 @@ clean_directory() {
     while IFS= read -r -d '' file; do
         ((file_count++))
         if command -v stat > /dev/null 2>&1; then
-            local size=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null || echo "0")
+            local size
+            size=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null || echo "0")
             total_size=$((total_size + size))
         fi
         
@@ -258,12 +260,14 @@ clean_cron_logs() {
     
     # Keep only last 1000 lines of cron log
     if [[ "$DRY_RUN" == "true" ]]; then
-        local current_lines=$(wc -l < "$cron_log")
+        local current_lines
+        current_lines=$(wc -l < "$cron_log")
         if [[ "$current_lines" -gt 1000 ]]; then
             log "Would truncate cron.log (currently $current_lines lines)"
         fi
     else
-        local temp_log=$(mktemp)
+        local temp_log
+        temp_log=$(mktemp)
         tail -1000 "$cron_log" > "$temp_log" && mv "$temp_log" "$cron_log"
         if [[ "$VERBOSE" == "true" ]]; then
             log "Truncated cron.log to last 1000 lines"
