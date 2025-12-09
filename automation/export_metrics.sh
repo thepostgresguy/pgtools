@@ -8,7 +8,6 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PGTOOLS_ROOT="$(dirname "$SCRIPT_DIR")"
 
 # Color codes
 RED='\033[0;31m'
@@ -68,6 +67,8 @@ EOF
 # Load configuration
 CONFIG_FILE="$SCRIPT_DIR/pgtools.conf"
 if [[ -f "$CONFIG_FILE" ]]; then
+    # shellcheck disable=SC1091
+    # shellcheck source=pgtools.conf
     source "$CONFIG_FILE"
 fi
 
@@ -129,7 +130,8 @@ check_database_connection() {
 
 # Collect basic metrics
 collect_metrics() {
-    local temp_file=$(mktemp)
+    local temp_file
+    temp_file=$(mktemp)
     
     # Basic database metrics
     psql -t -c "
@@ -254,7 +256,8 @@ format_json() {
 # Format metrics for InfluxDB
 format_influx() {
     local metrics_file="$1"
-    local timestamp=$(date +%s)000000000  # nanoseconds
+    local timestamp
+    timestamp=$(date +%s)000000000  # nanoseconds
     
     while IFS=$'\t' read -r metric value; do
         if [[ -n "$metric" && -n "$value" ]]; then

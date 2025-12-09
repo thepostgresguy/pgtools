@@ -152,6 +152,8 @@ mkdir -p "$OUTPUT_DIR"
 # Load configuration if available
 if [[ -f "$CONFIG_FILE" ]]; then
     log "Loading configuration from $CONFIG_FILE"
+    # shellcheck disable=SC1091
+    # shellcheck source=pgtools.conf
     source "$CONFIG_FILE"
 else
     warn "Configuration file not found: $CONFIG_FILE"
@@ -211,6 +213,7 @@ TIMESTAMP=$(date '+%Y%m%d_%H%M%S')
 REPORT_PREFIX="pgtools_health_check_${TIMESTAMP}"
 
 # Define monitoring scripts to run
+# shellcheck disable=SC2034 # referenced via nameref when selecting script set
 declare -A ESSENTIAL_SCRIPTS=(
     ["Connection Analysis"]="monitoring/connection_pools.sql"
     ["Lock Analysis"]="monitoring/locks.sql"
@@ -219,6 +222,7 @@ declare -A ESSENTIAL_SCRIPTS=(
     ["Backup Validation"]="backup/backup_validation.sql"
 )
 
+# shellcheck disable=SC2034 # referenced via nameref when selecting script set
 declare -A FULL_SCRIPTS=(
     ["Table Bloating"]="monitoring/bloating.sql"
     ["Buffer Performance"]="monitoring/buffer_troubleshoot.sql"
@@ -240,12 +244,19 @@ run_health_checks() {
         scripts_to_run="ESSENTIAL_SCRIPTS"
     else
         log "Running full health check"
-        scripts_to_run="FULL_SCRIPTS"
-        
-        # Add essential scripts to full run
-        for key in "${!ESSENTIAL_SCRIPTS[@]}"; do
-            FULL_SCRIPTS["$key"]="${ESSENTIAL_SCRIPTS[$key]}"
+        # shellcheck disable=SC2034 # referenced through nameref
+        local -A combined_scripts=()
+        local key
+
+        for key in "${!FULL_SCRIPTS[@]}"; do
+            # shellcheck disable=SC2034
+            combined_scripts["$key"]="${FULL_SCRIPTS[$key]}"
         done
+        # shellcheck disable=SC2034
+        for key in "${!ESSENTIAL_SCRIPTS[@]}"; do
+            combined_scripts["$key"]="${ESSENTIAL_SCRIPTS[$key]}"
+        done
+        scripts_to_run="combined_scripts"
     fi
     
     local -n scripts_ref=$scripts_to_run
@@ -258,7 +269,8 @@ run_health_checks() {
     # Create individual output files
     for script_name in "${!scripts_ref[@]}"; do
         local script_path="${PGTOOLS_ROOT}/${scripts_ref[$script_name]}"
-        local output_file="${OUTPUT_DIR}/${REPORT_PREFIX}_$(echo "$script_name" | tr ' ' '_' | tr '[:upper:]' '[:lower:]').txt"
+        local output_file
+        output_file="${OUTPUT_DIR}/${REPORT_PREFIX}_$(echo "$script_name" | tr ' ' '_' | tr '[:upper:]' '[:lower:]').txt"
         
         if [[ -f "$script_path" ]]; then
             if run_script "$script_path" "$script_name" "$output_file"; then
@@ -318,12 +330,14 @@ EOF
     # Append individual script outputs
     for output_file in "${OUTPUT_DIR}/${REPORT_PREFIX}"_*.txt; do
         if [[ -f "$output_file" ]]; then
-            echo "--- $(basename "$output_file" .txt | sed 's/^.*_//; s/_/ /g') ---" >> "$report_file"
-            echo >> "$report_file"
-            cat "$output_file" >> "$report_file"
-            echo >> "$report_file"
-            echo "=============================================================================" >> "$report_file"
-            echo >> "$report_file"
+            {
+                echo "--- $(basename "$output_file" .txt | sed 's/^.*_//; s/_/ /g') ---"
+                echo
+                cat "$output_file"
+                echo
+                echo "============================================================================="
+                echo
+            } >> "$report_file"
         fi
     done
 }
@@ -360,11 +374,12 @@ EOF
     # Process individual script outputs
     for output_file in "${OUTPUT_DIR}/${REPORT_PREFIX}"_*.txt; do
         if [[ -f "$output_file" ]]; then
-            local section_name=$(basename "$output_file" .txt | sed 's/^.*_//; s/_/ /g')
+            local section_name
+            section_name=$(basename "$output_file" .txt | sed 's/^.*_//; s/_/ /g')
             cat >> "$report_file" << EOF
     <div class="section">
         <div class="section-title">$section_name</div>
-        <div class="content">$(cat "$output_file" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g')</div>
+        <div class="content">$(sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g' "$output_file")</div>
     </div>
 EOF
         fi
@@ -396,8 +411,10 @@ EOF
             fi
             first_section=false
             
-            local section_name=$(basename "$output_file" .txt | sed 's/^.*_//; s/_/ /g')
-            local content=$(cat "$output_file" | sed 's/\\/\\\\/g; s/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
+            local section_name
+            section_name=$(basename "$output_file" .txt | sed 's/^.*_//; s/_/ /g')
+            local content
+            content=$(sed 's/\\/\\\\/g; s/"/\\"/g' "$output_file" | sed ':a;N;$!ba;s/\n/\\n/g')
             
             cat >> "$report_file" << EOF
         {
@@ -424,7 +441,8 @@ send_notifications() {
     fi
     
     local report_file="${OUTPUT_DIR}/${REPORT_PREFIX}_consolidated_report.${FORMAT}"
-    local subject="PostgreSQL Health Check Report - $DB_NAME - $(date '+%Y-%m-%d %H:%M')"
+    local subject
+    subject="PostgreSQL Health Check Report - $DB_NAME - $(date '+%Y-%m-%d %H:%M')"
     
     log "Sending email notifications to: $EMAIL_RECIPIENTS"
     

@@ -106,6 +106,8 @@ fi
 # Load configuration
 CONFIG_FILE="$SCRIPT_DIR/pgtools.conf"
 if [[ -f "$CONFIG_FILE" ]]; then
+    # shellcheck disable=SC1091
+    # shellcheck source=pgtools.conf
     source "$CONFIG_FILE"
 fi
 
@@ -114,7 +116,7 @@ run_test() {
     local test_name="$1"
     local test_function="$2"
     
-    if [[ "$TEST_PATTERN" != "*" ]] && [[ ! "$test_name" == $TEST_PATTERN ]]; then
+    if [[ "$TEST_PATTERN" != "*" ]] && [[ ! "$test_name" == "$TEST_PATTERN" ]]; then
         return 0
     fi
     
@@ -274,7 +276,8 @@ test_metrics_export_integration() {
     
     local metrics_script="$SCRIPT_DIR/export_metrics.sh"
     if [[ -x "$metrics_script" ]]; then
-        local temp_output=$(mktemp)
+        local temp_output
+        temp_output=$(mktemp)
         if "$metrics_script" --format json > "$temp_output" 2>&1; then
             # Validate JSON output
             if command -v python3 > /dev/null 2>&1; then
