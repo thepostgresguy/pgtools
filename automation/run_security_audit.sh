@@ -231,7 +231,7 @@ run_audit() {
             {
                 generate_html_header
                 echo "<pre>"
-                cat "$temp_output" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g'
+                sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g' "$temp_output"
                 echo "</pre>"
                 echo "</body></html>"
             } > "${OUTPUT_FILE:-/dev/stdout}"
@@ -242,7 +242,7 @@ run_audit() {
                 echo "{"
                 echo "\"audit_output\": ["
                 # Convert text output to JSON array
-                cat "$temp_output" | sed 's/"/\\"/g' | sed 's/^/"/; s/$/",/' | sed '$ s/,$//'
+                sed 's/"/\\"/g' "$temp_output" | sed 's/^/"/; s/$/",/' | sed '$ s/,$//'
                 echo "]"
                 echo "}"
                 echo "]"

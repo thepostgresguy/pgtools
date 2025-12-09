@@ -379,7 +379,7 @@ EOF
             cat >> "$report_file" << EOF
     <div class="section">
         <div class="section-title">$section_name</div>
-        <div class="content">$(cat "$output_file" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g')</div>
+        <div class="content">$(sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g' "$output_file")</div>
     </div>
 EOF
         fi
@@ -414,7 +414,7 @@ EOF
             local section_name
             section_name=$(basename "$output_file" .txt | sed 's/^.*_//; s/_/ /g')
             local content
-            content=$(cat "$output_file" | sed 's/\\/\\\\/g; s/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
+            content=$(sed 's/\\/\\\\/g; s/"/\\"/g' "$output_file" | sed ':a;N;$!ba;s/\n/\\n/g')
             
             cat >> "$report_file" << EOF
         {
