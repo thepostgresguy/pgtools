@@ -152,7 +152,8 @@ mkdir -p "$OUTPUT_DIR"
 # Load configuration if available
 if [[ -f "$CONFIG_FILE" ]]; then
     log "Loading configuration from $CONFIG_FILE"
-    # shellcheck source=automation/pgtools.conf
+    # shellcheck disable=SC1091
+    # shellcheck source=pgtools.conf
     source "$CONFIG_FILE"
 else
     warn "Configuration file not found: $CONFIG_FILE"
@@ -243,12 +244,20 @@ run_health_checks() {
         scripts_to_run="ESSENTIAL_SCRIPTS"
     else
         log "Running full health check"
-        scripts_to_run="FULL_SCRIPTS"
-        
-        # Add essential scripts to full run
-        for key in "${!ESSENTIAL_SCRIPTS[@]}"; do
-            FULL_SCRIPTS["$key"]="${ESSENTIAL_SCRIPTS[$key]}"
+        # shellcheck disable=SC2034 # referenced through nameref
+        local -A combined_scripts=()
+        local key
+
+        for key in "${!FULL_SCRIPTS[@]}"; do
+            combined_scripts["$key"]="${FULL_SCRIPTS[$key]}"
         done
+        # shellcheck disable=SC2034
+        for key in "${!ESSENTIAL_SCRIPTS[@]}"; do
+            combined_scripts["$key"]="${ESSENTIAL_SCRIPTS[$key]}"
+        done
+        # shellcheck enable=SC2034
+
+        scripts_to_run="combined_scripts"
     fi
     
     local -n scripts_ref=$scripts_to_run

@@ -61,7 +61,8 @@ EOF
 # Load configuration
 CONFIG_FILE="$SCRIPT_DIR/pgtools.conf"
 if [[ -f "$CONFIG_FILE" ]]; then
-    # shellcheck source=automation/pgtools.conf
+    # shellcheck disable=SC1091
+    # shellcheck source=pgtools.conf
     source "$CONFIG_FILE"
 fi
 
