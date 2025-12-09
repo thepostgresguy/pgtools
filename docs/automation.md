@@ -11,6 +11,8 @@ This directory contains automation scripts and tools to operationalize the pgtoo
 - **`cleanup_reports.sh`** - Report cleanup and log rotation management
 - **`export_metrics.sh`** - Metrics export for monitoring systems (Prometheus, Grafana, etc.)
 - **`test_pgtools.sh`** - Testing framework and validation suite
+- **`run_hot_update_report.sh`** - HOT update checklist exporter (text or JSON)
+- **`scripts/precommit_checks.sh`** - Mirrors CI validation locally
 
 ### Configuration
 - **`pgtools.conf.example`** - Configuration template with all available settings
@@ -58,6 +60,15 @@ chmod +x automation/*.sh
 
 # Export metrics
 ./automation/export_metrics.sh --format prometheus > metrics.txt
+
+# HOT report (JSON default)
+./automation/run_hot_update_report.sh --database my_database --format json
+
+# HOT report (text)
+./automation/run_hot_update_report.sh --format text --stdout
+
+# Full pre-commit bundle
+./scripts/precommit_checks.sh --database my_database
 ```
 
 ## Script Details
@@ -206,6 +217,47 @@ Comprehensive testing framework for validation.
 ./test_pgtools.sh --pattern "connection*"
 ```
 
+### run_hot_update_report.sh
+Unified HOT update checklist exporter for iqtoolkit-analyzer integration and manual audits.
+
+**Features:**
+- JSON (default) or text output with timestamped filenames in `reports/`.
+- Automatic JSON validation via `jq` or `python3 -m json.tool`.
+- Honors `automation/pgtools.conf` for connection settings, with CLI/env overrides.
+
+**Usage:**
+```bash
+# Default JSON report using config defaults
+./automation/run_hot_update_report.sh
+
+# Target a different database on the same server
+./automation/run_hot_update_report.sh --database analytics
+
+# Override both server and format
+PGHOST=staging-db ./automation/run_hot_update_report.sh --format text --stdout
+
+# Save to a custom location
+./automation/run_hot_update_report.sh --format json --output /tmp/hot_update.json
+
+# Combine all checks before committing
+./scripts/precommit_checks.sh --database my_database
+```
+
+**Regression tests:**
+```bash
+# Quick automation sanity check (connection, syntax, permissions)
+./automation/test_pgtools.sh --fast
+
+# Full automation suite with integration runs (requires DB access)
+./automation/test_pgtools.sh --full --verbose
+
+# Verify HOT JSON path end-to-end
+./automation/run_hot_update_report.sh --format json --database my_database --stdout
+
+# Verify HOT text path
+./automation/run_hot_update_report.sh --format text --database my_database --stdout
+```
+
 ## Configuration Reference
 
 The `pgtools.conf` file controls all automation behavior:
@@ -235,6 +287,13 @@ MONTHLY_SECURITY_AUDIT="0 3 1 * *"
 # Report Retention
 PGTOOLS_KEEP_REPORTS_DAYS=30
 ```
+
+**Configuration precedence:**
+1. Command-line flags (e.g., `--database analytics`) override everything.
+2. Environment variables such as `PGHOST`, `PGPORT`, `PGUSER`, `PGDATABASE`, `PGPASSWORD` override the config file.
+3. Values in `automation/pgtools.conf` act as defaults when no overrides are supplied.
+
+Because every automation script sources `automation/pgtools.conf` first, this order lets you define safe defaults for scheduled jobs while still pointing ad-hoc runs to alternative servers or databases.
 
 ## Integration Examples
 
