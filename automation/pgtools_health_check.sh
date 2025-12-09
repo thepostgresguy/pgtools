@@ -249,14 +249,13 @@ run_health_checks() {
         local key
 
         for key in "${!FULL_SCRIPTS[@]}"; do
+            # shellcheck disable=SC2034
             combined_scripts["$key"]="${FULL_SCRIPTS[$key]}"
         done
         # shellcheck disable=SC2034
         for key in "${!ESSENTIAL_SCRIPTS[@]}"; do
             combined_scripts["$key"]="${ESSENTIAL_SCRIPTS[$key]}"
         done
-        # shellcheck enable=SC2034
-
         scripts_to_run="combined_scripts"
     fi
     
