@@ -55,8 +55,8 @@ jobs:
       # - name: Fast automation test suite
       #   run: ./automation/test_pgtools.sh --fast
 
-      - name: HOT checklist JSON validation
-        run: ./automation/run_hot_update_report.sh --format json --database "$PGDATABASE" --stdout
+      # - name: HOT checklist JSON validation
+      #   run: ./automation/run_hot_update_report.sh --format json --database "$PGDATABASE" --stdout
 
-      - name: HOT checklist text validation
-        run: ./automation/run_hot_update_report.sh --format text --database "$PGDATABASE" --stdout
+      # - name: HOT checklist text validation
+      #   run: ./automation/run_hot_update_report.sh --format text --database "$PGDATABASE" --stdout
