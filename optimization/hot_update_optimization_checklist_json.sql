@@ -5,9 +5,18 @@
  * Usage:
  *   psql -d database_name -f optimization/hot_update_optimization_checklist_json.sql
  *
+ * Example (psql + jq):
+ *   psql -d iqtoolkit_test -Xq -f optimization/hot_update_optimization_checklist_json.sql \
+ *     | jq -r '.recommendations[] | {table_name, current_fillfactor, issue, action}'
+ *
+ * Notes on flags:
+ *   -Xq avoids ~/.psqlrc side effects and suppresses extra psql output.
+ *   This script also sets QUIET/tuples_only/unaligned/footer-off to keep output strict JSON.
+ *
  * Requirements:
  *   - PostgreSQL 9.3+
  *   - Privileges: pg_monitor role or pg_stat_all_tables access
+ *   - Optional: jq (only needed for the example pipeline above)
  *
  * Output:
  *   JSON document with:
@@ -21,8 +30,12 @@
  *   - Designed for downstream automation (CSV/JSON pipeline no longer required)
  */
 
+\set QUIET 1
+\pset pager off
+
 \pset tuples_only on
 \pset format unaligned
+\pset footer off
 
 WITH settings AS (
     SELECT
@@ -32,23 +45,34 @@ WITH settings AS (
 ),
 base_stats AS (
     SELECT
-        schemaname || '.' || relname AS table_name,
-        n_tup_upd AS total_updates,
-        n_tup_hot_upd AS hot_updates,
+        st.schemaname || '.' || st.relname AS table_name,
+        st.n_tup_upd AS total_updates,
+        st.n_tup_hot_upd AS hot_updates,
         CAST(ROUND(
-            CASE WHEN n_tup_upd > 0 THEN 100.0 * n_tup_hot_upd / n_tup_upd ELSE 0 END,
+            CASE WHEN st.n_tup_upd > 0 THEN 100.0 * st.n_tup_hot_upd / st.n_tup_upd ELSE 0 END,
             2
         ) AS double precision) AS hot_update_percent,
-        n_tup_upd - n_tup_hot_upd AS non_hot_updates,
-        pg_relation_size(schemaname || '.' || relname) AS table_size_bytes,
-        pg_size_pretty(pg_relation_size(schemaname || '.' || relname)) AS table_size_pretty,
-        seq_scan + idx_scan AS total_scans,
+        st.n_tup_upd - st.n_tup_hot_upd AS non_hot_updates,
+        COALESCE(
+            (
+                SELECT substring(opt from 'fillfactor=([0-9]+)')::int
+                FROM unnest(c.reloptions) AS opt
+                WHERE opt LIKE 'fillfactor=%'
+                LIMIT 1
+            ),
+            100
+        ) AS current_fillfactor,
+        pg_relation_size(st.relid) AS table_size_bytes,
+        pg_size_pretty(pg_relation_size(st.relid)) AS table_size_pretty,
+        st.seq_scan + st.idx_scan AS total_scans,
         now() AT TIME ZONE 'UTC' AS collected_at
-    FROM pg_stat_user_tables, settings
-    WHERE n_tup_upd > settings.minimum_updates
+    FROM pg_stat_user_tables st
+    JOIN pg_class c ON c.oid = st.relid
+    CROSS JOIN settings
+    WHERE st.n_tup_upd > settings.minimum_updates
     ORDER BY
-        CASE WHEN n_tup_upd > 0 THEN n_tup_hot_upd::float / n_tup_upd ELSE 1 END ASC,
-        n_tup_upd DESC
+        CASE WHEN st.n_tup_upd > 0 THEN st.n_tup_hot_upd::float / st.n_tup_upd ELSE 1 END ASC,
+        st.n_tup_upd DESC
     LIMIT 50
 ),
 table_payload AS (
@@ -60,6 +84,7 @@ table_payload AS (
                 'hot_updates', hot_updates,
                 'hot_update_percent', hot_update_percent,
                 'non_hot_updates', non_hot_updates,
+                'current_fillfactor', current_fillfactor,
                 'table_size_bytes', table_size_bytes,
                 'table_size', table_size_pretty,
                 'total_scans', total_scans,
@@ -84,7 +109,14 @@ recommendations AS (
         jsonb_agg(
             jsonb_build_object(
                 'table_name', table_name,
+                'issue', 'Low HOT update percentage',
+                'action', format(
+                    'ALTER TABLE %s SET (fillfactor = %s);',
+                    table_name,
+                    CASE WHEN hot_update_percent < 30 THEN 80 ELSE 90 END
+                ),
                 'hot_update_percent', hot_update_percent,
+                'current_fillfactor', current_fillfactor,
                 'recommended_fillfactor', CASE
                     WHEN hot_update_percent < 30 THEN 80
                     ELSE 90
