@@ -88,7 +88,7 @@ Advanced PostgreSQL statistics analysis for query optimization and performance t
 - **Freshness analysis** - Detection of stale table statistics
 - **Column distribution analysis** - NULL ratios, cardinality, and data characteristics
 - **Index statistics** - Usage patterns and efficiency metrics
-- **Extended statistics** - PostgreSQL 10+ multi-column statistics analysis
+- **Extended statistics** - PostgreSQL 15+ multi-column statistics analysis
 
 **Performance Insights:**
 - **High-cardinality columns** with insufficient most common values (MCV)
@@ -157,7 +157,7 @@ psql -f maintenance/statistics_collector.sql
 
 ### 4. Performance Optimization
 - **Statistics targets**: Increase for high-cardinality columns used in WHERE clauses
-- **Extended statistics**: Create for correlated columns in PostgreSQL 10+
+- **Extended statistics**: Create for correlated columns in PostgreSQL 15+
 - **Index maintenance**: Regular monitoring and selective REINDEX operations
 - **Autovacuum tuning**: Adjust settings based on workload patterns
 
@@ -269,7 +269,7 @@ ALTER TABLE user_sessions SET (
     autovacuum_analyze_scale_factor = 0.05
 );
 
--- Create extended statistics for correlated columns (PostgreSQL 10+)
+-- Create extended statistics for correlated columns (PostgreSQL 15+)
 CREATE STATISTICS user_location_stats ON city, state FROM users;
 ```
 

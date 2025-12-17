@@ -5,7 +5,7 @@
  * This script analyzes current PostgreSQL configuration settings and provides
  * recommendations for optimization based on workload patterns and best practices.
  * 
- * Requires: PostgreSQL 10+
+ * Requires: PostgreSQL 15+
  * Privileges: pg_monitor role or superuser for full analysis
  * 
  * Usage: psql -f configuration/configuration_analysis.sql

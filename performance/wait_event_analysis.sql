@@ -5,7 +5,7 @@
  * This script analyzes wait events to identify performance bottlenecks in PostgreSQL.
  * Wait events indicate what processes are waiting for and help diagnose performance issues.
  * 
- * Requires: PostgreSQL 10+, pg_stat_activity access
+ * Requires: PostgreSQL 15+, pg_stat_activity access
  * Privileges: pg_monitor role or superuser
  * 
  * Usage: psql -f performance/wait_event_analysis.sql

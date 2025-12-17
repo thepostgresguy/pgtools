@@ -5,7 +5,7 @@
  * This script provides detailed analysis of query performance, including
  * execution statistics, resource usage, and optimization recommendations.
  * 
- * Requires: PostgreSQL 13+, pg_stat_statements extension
+ * Requires: PostgreSQL 15+, pg_stat_statements extension
  * Privileges: pg_monitor role or superuser
  * 
  * Usage: psql -f performance/query_performance_profiler.sql
@@ -193,7 +193,7 @@ LIMIT 15;
 
 \echo ''
 
--- JIT compilation analysis (PostgreSQL 11+)
+-- JIT compilation analysis (PostgreSQL 15+ with JIT enabled)
 \echo '--- JIT COMPILATION ANALYSIS ---'
 DO $jit$
 BEGIN
@@ -219,7 +219,7 @@ BEGIN
         ORDER BY jit_generation_time + jit_inlining_time + jit_optimization_time + jit_emission_time DESC
         LIMIT 10';
     ELSE
-        RAISE NOTICE 'JIT compilation statistics not available (requires PostgreSQL 11+ with JIT enabled)';
+        RAISE NOTICE 'JIT compilation statistics not available (requires PostgreSQL 15+ with JIT enabled)';
     END IF;
 END;
 $jit$;

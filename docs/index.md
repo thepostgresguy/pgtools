@@ -32,7 +32,7 @@ This toolkit provides battle-tested SQL scripts for PostgreSQL database administ
 
 ## Prerequisites
 
-- PostgreSQL 10+ (some scripts may work with earlier versions)
+- PostgreSQL 15+ (tested baseline)
 - Appropriate database privileges (typically `pg_monitor` role or superuser)
 - `psql` command-line tool or any PostgreSQL client
 
@@ -116,7 +116,7 @@ psql -U username -d database_name -f locks.sql
 - Table and index statistics analysis and optimization
 - Statistics quality assessment and freshness analysis
 - Column distribution analysis with optimization recommendations
-- Extended statistics support for PostgreSQL 10+
+- Extended statistics support for PostgreSQL 15+
 
 ### 👤 Administration Scripts
 **extensions.sql**

@@ -5,7 +5,7 @@
  * This script identifies tables that need maintenance operations
  * and provides recommendations for VACUUM, ANALYZE, and REINDEX.
  * 
- * Requires: PostgreSQL 10+, pg_stat_user_tables access
+ * Requires: PostgreSQL 15+, pg_stat_user_tables access
  * Privileges: pg_monitor role or superuser for full analysis
  * 
  * Usage: psql -f maintenance/maintenance_scheduler.sql

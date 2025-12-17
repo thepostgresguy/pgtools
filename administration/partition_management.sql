@@ -6,7 +6,7 @@
  *   psql -d database_name -f administration/partition_management.sql
  *
  * Requirements:
- *   - PostgreSQL 10+ (native partitioning)
+ *   - PostgreSQL 15+ (native partitioning)
  *   - Privileges: pg_monitor role or table owner permissions
  *
  * Output:

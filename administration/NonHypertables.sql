@@ -7,7 +7,7 @@
  *   psql -d database_name -f administration/NonHypertables.sql
  *
  * Requirements:
- *   - PostgreSQL 9.6+
+ *   - PostgreSQL 15+
  *   - TimescaleDB extension installed
  *   - Privileges: Any user (can see tables they have access to)
  *

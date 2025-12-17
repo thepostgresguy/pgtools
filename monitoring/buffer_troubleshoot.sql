@@ -6,7 +6,7 @@
  *   psql -d database_name -f monitoring/buffer_troubleshoot.sql
  *
  * Requirements:
- *   - PostgreSQL 9.0+
+ *   - PostgreSQL 15+
  *   - Privileges: pg_monitor role recommended
  *   - Extension: pg_buffercache (must be installed)
  *

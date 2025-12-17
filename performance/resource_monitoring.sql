@@ -5,7 +5,7 @@
  * This script monitors CPU, memory, I/O, and other system resources
  * to help identify bottlenecks and resource constraints.
  * 
- * Requires: PostgreSQL 10+, appropriate monitoring privileges
+ * Requires: PostgreSQL 15+, appropriate monitoring privileges
  * Privileges: pg_monitor role or superuser
  * 
  * Usage: psql -f performance/resource_monitoring.sql

@@ -6,7 +6,7 @@
  * helps identify statistics issues, and provides recommendations
  * for improving query plan accuracy.
  * 
- * Requires: PostgreSQL 10+, access to pg_stats and pg_statistic
+ * Requires: PostgreSQL 15+, access to pg_stats and pg_statistic
  * Privileges: pg_monitor role or superuser
  * 
  * Usage: psql -f maintenance/statistics_collector.sql
@@ -263,7 +263,7 @@ ORDER BY
 
 \echo ''
 
--- Extended statistics (PostgreSQL 10+)
+-- Extended statistics (PostgreSQL 15+)
 \echo '--- EXTENDED STATISTICS ANALYSIS ---'
 DO $extended_stats$
 BEGIN

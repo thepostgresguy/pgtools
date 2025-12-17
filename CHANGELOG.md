@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `GETTING-STARTED.md` - Comprehensive beginner's guide with installation, first steps, and workflow examples
 - README.md updated with prominent link to getting started guide for new users
 
+### Changed
+- Raised minimum supported PostgreSQL version to 15+ across scripts and documentation
+
 ### Fixed
 - Removed duplicate "Quick Start" section from README.md to eliminate redundancy with comprehensive getting started guide
 - Streamlined README.md table of contents by removing redundant sections
@@ -130,10 +133,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Security Compliance**: Enterprise-grade security auditing and permission analysis
 - **Operational Excellence**: Professional workflows for incident response and maintenance procedures
 - **Integration Support**: Native integration with Grafana, Prometheus, and other monitoring tools
-- **Cross-Platform**: Compatible with PostgreSQL 10+ across different operating systems
+- **Cross-Platform**: Compatible with PostgreSQL 15+ across different operating systems
 
 ### Technical Details
-- **PostgreSQL Compatibility**: 10, 11, 12, 13, 14, 15 (minimum 10+ recommended)
+- **PostgreSQL Compatibility**: 15+ (tested baseline)
 - **Required Privileges**: Most scripts require `pg_monitor` role or superuser privileges
 - **Dependencies**: Some scripts require specific extensions (pg_stat_statements, pg_buffercache)
 - **Platform Support**: Linux, macOS, Windows (with appropriate shell environment)

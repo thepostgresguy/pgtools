@@ -57,7 +57,7 @@
  *   );
  *
  * Requirements:
- *   - PostgreSQL 9.0+
+ *   - PostgreSQL 15+
  *   - Privileges: pg_monitor role or pg_stat_all_tables access
  *   - track_counts = on (default in PostgreSQL)
  *
@@ -86,12 +86,12 @@
 
 -- Table bloat estimation
 SELECT
-    schemaname || '.' || tablename AS table_name,
-    pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) AS total_size,
+    schemaname || '.' || relname AS table_name,
+    pg_size_pretty(pg_total_relation_size(schemaname||'.'||relname)) AS total_size,
     n_dead_tup AS dead_tuples,
     n_live_tup AS live_tuples,
     ROUND(n_dead_tup * 100.0 / NULLIF(n_live_tup + n_dead_tup, 0), 2) AS dead_tuple_percent,
-    pg_size_pretty(pg_relation_size(schemaname||'.'||tablename)) AS table_size,
+    pg_size_pretty(pg_relation_size(schemaname||'.'||relname)) AS table_size,
     last_vacuum,
     last_autovacuum
 FROM pg_stat_user_tables

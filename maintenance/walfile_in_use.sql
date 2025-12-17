@@ -6,7 +6,7 @@
  *   psql -d database_name -f maintenance/walfile_in_use.sql
  *
  * Requirements:
- *   - PostgreSQL 10+
+ *   - PostgreSQL 15+
  *   - Privileges: Superuser or pg_monitor role
  *
  * Output:
@@ -18,7 +18,7 @@
  *   - Helps troubleshoot disk space issues in pg_wal directory
  *   - Shows current write position
  *   - Useful for monitoring WAL generation rate
- *   - For PostgreSQL 9.6 and earlier, check pg_xlog directory
+ *   - Legacy note: pre-10 instances required checking the pg_xlog directory
  *   - Large number of WAL files may indicate archiving issues
  */
 

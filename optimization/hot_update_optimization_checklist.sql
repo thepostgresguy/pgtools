@@ -6,7 +6,7 @@
  *   psql -d database_name -f optimization/hot_update_optimization_checklist.sql
  *
  * Requirements:
- *   - PostgreSQL 9.0+
+ *   - PostgreSQL 15+
  *   - Privileges: pg_monitor role or pg_stat_all_tables access
  *
  * Output:
@@ -31,6 +31,8 @@ SELECT
     schemaname || '.' || relname AS table_name,
     n_tup_upd AS total_updates,
     n_tup_hot_upd AS hot_updates,
+    n_live_tup AS live_tuples,
+    n_dead_tup AS dead_tuples,
     CASE 
         WHEN n_tup_upd > 0 THEN 
             ROUND(100.0 * n_tup_hot_upd / n_tup_upd, 2)

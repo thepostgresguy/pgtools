@@ -14,7 +14,7 @@
  *   This script also sets QUIET/tuples_only/unaligned/footer-off to keep output strict JSON.
  *
  * Requirements:
- *   - PostgreSQL 9.3+
+ *   - PostgreSQL 15+
  *   - Privileges: pg_monitor role or pg_stat_all_tables access
  *   - Optional: jq (only needed for the example pipeline above)
  *
@@ -48,6 +48,8 @@ base_stats AS (
         st.schemaname || '.' || st.relname AS table_name,
         st.n_tup_upd AS total_updates,
         st.n_tup_hot_upd AS hot_updates,
+        st.n_live_tup AS live_tuples,
+        st.n_dead_tup AS dead_tuples,
         CAST(ROUND(
             CASE WHEN st.n_tup_upd > 0 THEN 100.0 * st.n_tup_hot_upd / st.n_tup_upd ELSE 0 END,
             2
@@ -82,6 +84,8 @@ table_payload AS (
                 'table_name', table_name,
                 'total_updates', total_updates,
                 'hot_updates', hot_updates,
+                'live_tuples', live_tuples,
+                'dead_tuples', dead_tuples,
                 'hot_update_percent', hot_update_percent,
                 'non_hot_updates', non_hot_updates,
                 'current_fillfactor', current_fillfactor,
