@@ -6,7 +6,7 @@
  *   psql -d database_name -f administration/extensions.sql
  *
  * Requirements:
- *   - PostgreSQL 9.1+
+ *   - PostgreSQL 15+
  *   - Privileges: Any user (reads from pg_extension catalog)
  *
  * Output:
