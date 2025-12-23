@@ -14,7 +14,7 @@
  *   This script also sets QUIET/tuples_only/unaligned/footer-off to keep output strict JSON.
  *
  * Requirements:
- *   - PostgreSQL 9.3+
+ *   - PostgreSQL 15+
  *   - Privileges: pg_monitor role or pg_stat_all_tables access
  *   - Optional: jq (only needed for the example pipeline above)
  *

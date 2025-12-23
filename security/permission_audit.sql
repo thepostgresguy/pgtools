@@ -6,7 +6,7 @@
  *   psql -d database_name -f security/permission_audit.sql
  *
  * Requirements:
- *   - PostgreSQL 9.0+
+ *   - PostgreSQL 15+
  *   - Privileges: Superuser or security officer role for complete audit
  *
  * Output:
