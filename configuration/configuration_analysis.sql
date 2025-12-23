@@ -35,65 +35,34 @@ SELECT
 
 -- Memory configuration analysis
 \echo '--- MEMORY CONFIGURATION ANALYSIS ---'
-WITH memory_settings AS (
-    SELECT 
-        name,
-        setting,
-        unit,
-        source,
-        CASE 
-            WHEN unit = 'kB' THEN setting::bigint * 1024
-            WHEN unit = 'MB' THEN setting::bigint * 1024 * 1024
-            WHEN unit = 'GB' THEN setting::bigint * 1024 * 1024 * 1024
-            WHEN unit = '8kB' THEN setting::bigint * 8192
-            ELSE setting::bigint
-        END as bytes_value,
-        short_desc
-    FROM pg_settings
-    WHERE name IN (
-        'shared_buffers', 
-        'work_mem', 
-        'maintenance_work_mem',
-        'effective_cache_size',
-        'wal_buffers',
-        'max_connections',
-        'shared_preload_libraries'
-    )
-)
-SELECT 
-    name as parameter,
-    setting || COALESCE(' ' || unit, '') as current_value,
-    pg_size_pretty(bytes_value) as size_pretty,
-    source as config_source,
-    short_desc as description,
-    CASE name
-        WHEN 'shared_buffers' THEN 
-            CASE 
-                WHEN bytes_value < 128 * 1024 * 1024 THEN 'LOW - Consider 25% of RAM'
-                WHEN bytes_value > 8 * 1024 * 1024 * 1024 THEN 'HIGH - May cause issues'
-                ELSE 'REASONABLE'
-            END
-        WHEN 'work_mem' THEN 
-            CASE 
-                WHEN bytes_value < 4 * 1024 * 1024 THEN 'LOW - May cause temp files'
-                WHEN bytes_value > 1024 * 1024 * 1024 THEN 'HIGH - Risk of OOM'
-                ELSE 'REASONABLE'
-            END
-        WHEN 'maintenance_work_mem' THEN
-            CASE 
-                WHEN bytes_value < 64 * 1024 * 1024 THEN 'LOW - Slow maintenance ops'
-                WHEN bytes_value > 2 * 1024 * 1024 * 1024 THEN 'HIGH - May be excessive'
-                ELSE 'REASONABLE'
-            END
-        WHEN 'effective_cache_size' THEN
-            CASE 
-                WHEN bytes_value < 1 * 1024 * 1024 * 1024 THEN 'LOW - Underestimating OS cache'
-                ELSE 'Check if realistic for your system'
-            END
-        ELSE 'Review based on workload'
-    END as assessment
-FROM memory_settings
-ORDER BY bytes_value DESC NULLS LAST;
+// ... existing code ...
+-- Memory configuration analysis
+\echo '--- MEMORY CONFIGURATION ANALYSIS ---'
+WITH memory_settings AS (SELECT name,
+                                setting,
+                                unit,
+                                source,
+                                CASE
+                                    WHEN name = 'shared_preload_libraries' THEN NULL
+                                    WHEN unit = 'kB' THEN setting::bigint * 1024
+                                    WHEN unit = 'MB' THEN setting::bigint * 1024 * 1024
+                                    WHEN unit = 'GB' THEN setting::bigint * 1024 * 1024 * 1024
+                                    WHEN unit = '8kB' THEN setting::bigint * 8192
+                                    ELSE setting::bigint
+                                    END as bytes_value,
+                                short_desc
+                         FROM pg_settings
+                         WHERE name IN (
+                                        'shared_buffers',
+                                        'work_mem',
+                                        'maintenance_work_mem',
+                                        'effective_cache_size',
+                                        'wal_buffers',
+                                        'max_connections',
+                                        'shared_preload_libraries'
+                             ))
+SELECT name as parameter,
+       // ...existing code ...;
 
 \echo ''
 
