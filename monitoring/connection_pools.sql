@@ -6,7 +6,7 @@
  *   psql -d database_name -f monitoring/connection_pools.sql
  *
  * Requirements:
- *   - PostgreSQL 9.0+
+ *   - PostgreSQL 15+
  *   - Privileges: pg_monitor role or sufficient permissions
  *   - Works with PgBouncer, Pgpool-II, and built-in connection info
  *

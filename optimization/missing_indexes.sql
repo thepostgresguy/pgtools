@@ -6,7 +6,7 @@
  *   psql -d database_name -f optimization/missing_indexes.sql
  *
  * Requirements:
- *   - PostgreSQL 9.5+
+ *   - PostgreSQL 15+
  *   - pg_stat_statements extension enabled (for query analysis)
  *   - Privileges: pg_monitor role or pg_stat_all_tables access
  *

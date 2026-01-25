@@ -6,7 +6,7 @@
  *   psql -d database_name -f backup/backup_validation.sql
  *
  * Requirements:
- *   - PostgreSQL 10+
+ *   - PostgreSQL 15+
  *   - Privileges: pg_monitor role or superuser for full validation
  *
  * Output:

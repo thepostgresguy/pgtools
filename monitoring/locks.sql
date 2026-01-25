@@ -45,7 +45,7 @@
  *   4. Review application logic for lock optimization
  *
  * Requirements:
- *   - PostgreSQL 9.2+
+ *   - PostgreSQL 15+
  *   - Privileges: pg_monitor role or sufficient permissions to view pg_locks and pg_stat_activity
  *
  * Output Description:

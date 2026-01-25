@@ -94,7 +94,7 @@ This toolkit provides battle-tested SQL scripts for PostgreSQL database administ
 - Table and index statistics analysis and optimization
 - Statistics quality assessment and freshness analysis
 - Column distribution analysis with optimization recommendations
-- Extended statistics support for PostgreSQL 10+
+- Extended statistics support for PostgreSQL 15+
 
 ### 👤 Administration Scripts
 **extensions.sql**

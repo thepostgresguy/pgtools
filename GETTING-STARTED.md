@@ -323,10 +323,10 @@ psql -d your_database -c "CREATE EXTENSION IF NOT EXISTS pg_stat_statements;"
 
 #### Insufficient Privileges
 ```bash
-# Grant monitoring role (PostgreSQL 10+)
+# Grant monitoring role (PostgreSQL 15+)
 psql -d your_database -c "GRANT pg_monitor TO your_monitoring_user;"
 
-# For older versions, grant specific permissions:
+# For pre-15 legacy versions, grant specific permissions:
 psql -d your_database -c "GRANT SELECT ON ALL TABLES IN SCHEMA pg_catalog TO your_monitoring_user;"
 ```
 

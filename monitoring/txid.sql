@@ -6,7 +6,7 @@
  *   psql -d database_name -f monitoring/txid.sql
  *
  * Requirements:
- *   - PostgreSQL 9.0+
+ *   - PostgreSQL 15+
  *   - Privileges: Any user (uses public views)
  *
  * Output:

@@ -117,7 +117,7 @@
  *   fi
  *
  * Requirements:
- *   - PostgreSQL 9.1+ (streaming replication), 10+ recommended for full features
+ *   - PostgreSQL 15+ (streaming replication)
  *   - Privileges: Superuser or pg_monitor role (to access replication views)
  *   - Must run on PRIMARY server (not standby)
  *   - Network connectivity to standby servers for accurate monitoring

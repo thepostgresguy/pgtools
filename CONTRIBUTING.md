@@ -128,7 +128,7 @@ psql -h localhost -p 5432 -U postgres -d postgres -f your_script.sql
 ```
 
 ### Test Checklist
-- [ ] Script executes without errors on PostgreSQL 10+
+- [ ] Script executes without errors on PostgreSQL 15+
 - [ ] Output is properly formatted and readable
 - [ ] Script handles edge cases (empty tables, no data, etc.)
 - [ ] Performance is acceptable on databases with 1M+ rows
@@ -181,7 +181,7 @@ Brief description of changes and motivation.
 - [ ] Workflow improvement
 
 ## Testing
-- [ ] Tested on PostgreSQL 10+
+- [ ] Tested on PostgreSQL 15+
 - [ ] Tested with sample data
 - [ ] Performance tested on large dataset
 - [ ] Documentation examples verified

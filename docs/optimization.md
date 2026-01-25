@@ -79,7 +79,7 @@ Single entrypoint that emits either JSON (default) or text.
 4. Review the analyzer findings alongside the fillfactor commands embedded in the JSON `recommendations` list.
 
 ## Requirements
-- PostgreSQL 9.0+ for the text report; 9.3+ for the JSON variant (uses `jsonb`).
+- PostgreSQL 15+ for both the text and JSON variants.
 - `pg_monitor` role or equivalent access to `pg_stat_user_tables`.
 - `psql` client available on the automation host.
 - Optional: `jq` for faster JSON validation.

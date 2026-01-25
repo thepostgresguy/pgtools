@@ -7,7 +7,7 @@
  *   psql -d database_name -f administration/table_ownership.sql
  *
  * Requirements:
- *   - PostgreSQL 8.0+
+ *   - PostgreSQL 15+
  *   - Privileges: Any user (can see tables they have access to)
  *
  * Output:

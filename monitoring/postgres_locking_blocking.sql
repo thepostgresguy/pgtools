@@ -6,7 +6,7 @@
  *   psql -d database_name -f monitoring/postgres_locking_blocking.sql
  *
  * Requirements:
- *   - PostgreSQL 9.6+
+ *   - PostgreSQL 15+
  *   - Privileges: pg_monitor role recommended
  *
  * Output:
