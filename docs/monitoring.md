@@ -29,6 +29,7 @@ psql -d mydb -f monitoring/connection_pools.sql         # Check connection effic
 psql -d mydb -f monitoring/postgres_locking_blocking.sql # Identify blocking sessions
 psql -d mydb -f monitoring/bloating.sql                 # Check for space issues
 psql -d mydb -f monitoring/buffer_troubleshoot.sql      # Analyze memory usage
+psql -d mydb -f monitoring/memory_contexts_overview.sql # Identify memory-heavy backends
 ```
 
 ## Scripts Overview
@@ -149,6 +150,44 @@ TOAST                 | 8192         | 131072        | 6.2%         | 97.1%
 - **Hit Ratio >95%:** Good cache performance
 - **Hit Ratio 90-95%:** Consider increasing shared_buffers
 - **Hit Ratio <90%:** Investigate query patterns or increase memory
+
+#### `memory_contexts_overview.sql`
+**Purpose:** High-level backend memory context usage overview
+**Use Cases:**
+- Identify memory-heavy backends
+- Triage memory pressure events
+- Spot unusual memory context growth
+
+**Sample Output:**
+```
+pid  | backend_type | application_name | total_memory | used_percent | utilization_status
+-----|--------------|------------------|--------------|--------------|-------------------
+4321 | client backend | app-api         | 512 MB       | 91.2         | CRITICAL: >90% used
+9876 | autovacuum     |                 | 256 MB       | 63.5         | OK
+```
+
+**Interpretation Tips:**
+- **High used_percent:** Identify the backend and correlate with workload
+- **Unexpected backend_type:** Investigate background worker or maintenance processes
+
+#### `memory_contexts_detail.sql`
+**Purpose:** Detailed memory context breakdown per backend
+**Use Cases:**
+- Deep dive into which contexts are consuming memory
+- Identify possible memory fragmentation
+- Support incident response for runaway memory usage
+
+**Sample Output:**
+```
+pid  | name                 | ident         | total_memory | free_percent
+-----|----------------------|---------------|--------------|-------------
+4321 | AllocSetContext      | ExecutorState | 128 MB       | 12.4
+4321 | MessageContext       |               | 96 MB        | 3.8
+```
+
+**Alert Thresholds:**
+- **High free_percent (>50%)** within large contexts can indicate fragmentation
+- **Large ExecutorState** contexts may indicate long-running or complex queries
 
 ### 🔄 Replication Monitoring Scripts
 

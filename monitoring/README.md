@@ -8,6 +8,8 @@ This directory contains essential monitoring scripts for PostgreSQL:
 
 - `bloating.sql` - Table and index bloat detection
 - `buffer_troubleshoot.sql` - Buffer pool analysis
+- `memory_contexts_overview.sql` - Backend memory context overview
+- `memory_contexts_detail.sql` - Detailed memory context breakdown
 - `connection_pools.sql` - Connection pooling efficiency
 - `locks.sql` - Lock monitoring and analysis
 - `postgres_locking_blocking.sql` - Blocking query identification
