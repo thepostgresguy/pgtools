@@ -92,16 +92,22 @@ BEGIN
         RETURN;
     END IF;
 
+    -- Uses the pg_buffercache view, which exists on all supported versions
+    -- (pg_buffercache_summary() is PG16+ only and has different columns).
     FOR r IN
         SELECT
-            CASE
-                WHEN category = 'buffer content' THEN category || ' (' || name || ')'
-                ELSE category
-            END AS resource_type,
+            resource_type,
             buffers,
             pg_size_pretty(buffers * 8192) AS size,
-            ROUND(100.0 * buffers / (SELECT setting FROM pg_settings WHERE name = 'shared_buffers')::int, 2) AS percent_of_shared_buffers
-        FROM pg_buffercache_summary()
+            ROUND(100.0 * buffers / NULLIF((SELECT COUNT(*) FROM pg_buffercache), 0), 2) AS percent_of_shared_buffers
+        FROM (
+            SELECT 'used' AS resource_type, COUNT(*) FILTER (WHERE relfilenode IS NOT NULL) AS buffers
+            FROM pg_buffercache
+            UNION ALL
+            SELECT 'dirty', COUNT(*) FILTER (WHERE isdirty) FROM pg_buffercache
+            UNION ALL
+            SELECT 'unused', COUNT(*) FILTER (WHERE relfilenode IS NULL) FROM pg_buffercache
+        ) b
         ORDER BY buffers DESC
     LOOP
         RAISE NOTICE 'resource_type=% buffers=% size=% pct=%',
