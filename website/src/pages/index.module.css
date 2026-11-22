@@ -1,0 +1,26 @@
+.hero {
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.tagline {
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+.description {
+  max-width: 42rem;
+  margin: 0 auto;
+  font-size: 1.05rem;
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.section {
+  padding: 2rem 0;
+}

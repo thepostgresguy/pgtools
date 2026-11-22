@@ -9,7 +9,8 @@ PostgreSQL Troubleshooting Cheat Sheet
 
 - pg_stat_statements
     Extension that tracks execution stats for all normalized queries.
-    Requires: CREATE EXTENSION pg_stat_statements;
+    Requires: shared_preload_libraries = 'pg_stat_statements' in postgresql.conf (restart),
+              then CREATE EXTENSION pg_stat_statements;
 
 - pg_locks
     Displays locks held by sessions and which are waiting.

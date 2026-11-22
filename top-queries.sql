@@ -10,7 +10,8 @@
  * cumulative execution time.
  *
  * NOTE: This script requires the `pg_stat_statements` extension to be enabled.
- * If it is not enabled, this query will fail.
+ * It also requires `shared_preload_libraries = 'pg_stat_statements'` in
+ * `postgresql.conf` (requires restart). If either is missing, this query will fail.
  *
  * Red Flags:
  * - High `total_ms`: A query that is a top contributor to overall workload.
