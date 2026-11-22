@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Raised minimum supported PostgreSQL version to 15+ across scripts and documentation
 
 ### Fixed
+- `cache-hit.sql` failed on every PostgreSQL version (`column "relkind" does not exist`). It now reads block counts from `pg_statio_all_tables` and `pg_statio_all_indexes`, and shows schema, index names and their tables
+- The SQL test suite now runs the top-level scripts too, so errors like the one above fail CI
 - Removed duplicate "Quick Start" section from README.md to eliminate redundancy with comprehensive getting started guide
 - Streamlined README.md table of contents by removing redundant sections
 
