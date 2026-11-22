@@ -19,6 +19,7 @@
  *   - Legacy note: pre-10 instances used pg_switch_xlog(); PostgreSQL 15+ uses pg_switch_wal()
  *   - Does not affect database performance
  *   - Creates a new WAL segment file
+ *   - Changes server state, so automation/test_pgtools.sh never executes it (SQL_MUTATING)
  */
 
 SELECT pg_switch_wal();
