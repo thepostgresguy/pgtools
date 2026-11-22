@@ -1,7 +1,7 @@
 /*
  * Script: export_all_settings.sql
  * Purpose: Export all PostgreSQL server settings in human-readable and JSON formats
- * Supports: PostgreSQL 15, 16, 17, 18
+ * Supports: PostgreSQL 15, 16, 17, 18, 19
  * Privileges: pg_read_all_settings (preferred) or superuser
  * Usage: psql -f configuration/export_all_settings.sql > settings.txt
  */

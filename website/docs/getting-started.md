@@ -51,10 +51,10 @@ All commands are run through the `pgtools.sh` wrapper:
 
 ## PostgreSQL Compatibility
 
-Tested against PostgreSQL 14 through 18. Check your version:
+Tested against PostgreSQL 15 through 19. Check your version:
 
 ```bash
 psql --version
 ```
 
-PostgreSQL 13 or earlier is not officially supported — some scripts may not work as expected.
+PostgreSQL 14 or earlier is not officially supported — some scripts may not work as expected.

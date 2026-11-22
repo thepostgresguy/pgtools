@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        postgres_version: [14, 15, 16, 17, 18]
+        postgres_version: [15, 16, 17, 18, 19]
     env:
       PGHOST: localhost
       PGPORT: 5432
