@@ -199,7 +199,10 @@ test_extensions_available() {
 # Directories that contribute .sql files to the syntax test corpus. Kept as an
 # allowlist rather than a recursive find so we can intentionally exclude folders
 # (e.g. timescaledb/, which only runs under a TimescaleDB-enabled cluster).
+# The repo root is scanned one level deep only, so it adds the top-level
+# scripts (cache-hit.sql, top-queries.sql, ...) without re-scanning subfolders.
 SQL_TEST_DIRS=(
+    "$PGTOOLS_ROOT"
     "$PGTOOLS_ROOT/administration"
     "$PGTOOLS_ROOT/backup"
     "$PGTOOLS_ROOT/configuration"
@@ -220,6 +223,7 @@ SQL_REQUIRES_SUPERUSER=(
 
 # Files that require pg_stat_statements.
 SQL_REQUIRES_PG_STAT_STATEMENTS=(
+    "top-queries.sql"
     "optimization/missing_indexes.sql"
     "performance/query_performance_profiler.sql"
     "troubleshooting/postgres_troubleshooting_queries.sql"
@@ -236,6 +240,10 @@ SQL_REQUIRES_PG_BUFFERCACHE=(
 # TimescaleDB-only files. Always skipped by the syntax test; covered separately
 # when the test runs against a TimescaleDB-enabled instance.
 SQL_REQUIRES_TIMESCALEDB=(
+    "cagg-stats.sql"
+    "chunk-stats.sql"
+    "compression-stats.sql"
+    "job-errors.sql"
     "administration/NonHypertables.sql"
 )
 
@@ -259,12 +267,16 @@ test_sql_syntax() {
     local dir
     local sql_file
     local rel_path
+    local depth
 
     for dir in "${SQL_TEST_DIRS[@]}"; do
         if [[ ! -d "$dir" ]]; then
             warn "SQL directory not found: $dir"
             continue
         fi
+
+        depth=2
+        [[ "$dir" == "$PGTOOLS_ROOT" ]] && depth=1
 
         while IFS= read -r -d '' sql_file; do
             rel_path="${sql_file#"$PGTOOLS_ROOT"/}"
@@ -298,7 +310,7 @@ test_sql_syntax() {
             elif [[ "$VERBOSE" == "true" ]]; then
                 log "OK: $rel_path"
             fi
-        done < <(find "$dir" -maxdepth 2 -type f -name '*.sql' -print0)
+        done < <(find "$dir" -maxdepth "$depth" -type f -name '*.sql' -print0)
     done
 
     return "$failed"
