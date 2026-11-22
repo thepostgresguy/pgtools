@@ -41,14 +41,17 @@ WHERE c.relkind IN ('r','v','m','f','p')
     AND n.nspname !~ '^pg_toast'
 ORDER BY n.nspname, c.relname;
 
---Change ownership of all tables
-
-DO $$
-DECLARE
-    r RECORD;
-BEGIN
-    FOR r IN SELECT tablename FROM pg_tables WHERE schemaname = 'public'
-    LOOP
-        EXECUTE format('ALTER TABLE public.%I OWNER TO new_owner;', r.tablename);
-    END LOOP;
-END $$;
+-- Example: change ownership of all tables in a schema.
+-- This script is a read-only audit, so the block below is intentionally
+-- commented out. To use it, copy it into a psql session, replace
+-- 'public' and new_owner with real values, and run it deliberately.
+--
+-- DO $$
+-- DECLARE
+--     r RECORD;
+-- BEGIN
+--     FOR r IN SELECT tablename FROM pg_tables WHERE schemaname = 'public'
+--     LOOP
+--         EXECUTE format('ALTER TABLE public.%I OWNER TO new_owner;', r.tablename);
+--     END LOOP;
+-- END $$;

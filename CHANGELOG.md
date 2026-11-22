@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `cache-hit.sql` failed on every PostgreSQL version (`column "relkind" does not exist`). It now reads block counts from `pg_statio_all_tables` and `pg_statio_all_indexes`, and shows schema, index names and their tables
 - The SQL test suite now runs the top-level scripts too, so errors like the one above fail CI
+- `administration/table_ownership.sql` changed the owner of every table in `public` to `new_owner` when run (it fails if that role doesn't exist). The ownership-change block is now a commented-out example, so the script is read-only as documented. This also affected `automation/pgtools_health_check.sh`, which runs it
+- The SQL test suite no longer executes scripts that change database or server state. A new `SQL_MUTATING` list in `automation/test_pgtools.sh` skips them; it currently holds `maintenance/switch_pg_wal_file.sql` (`pg_switch_wal()`)
 - Removed duplicate "Quick Start" section from README.md to eliminate redundancy with comprehensive getting started guide
 - Streamlined README.md table of contents by removing redundant sections
 

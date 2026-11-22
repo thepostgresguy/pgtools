@@ -120,7 +120,7 @@ HAS_PG_STAT_STATEMENTS="false"
 HAS_PG_BUFFERCACHE="false"
 
 detect_environment_capabilities() {
-    # Superuser gate — permission_audit.sql and switch_pg_wal_file.sql need it.
+    # Superuser gate — permission_audit.sql needs it.
     local is_super
     if is_super="$(psql -tA -c "SELECT current_setting('is_superuser', true);" 2>/dev/null)"; then
         if [[ "$(echo "$is_super" | tr -d '[:space:]')" != "on" ]]; then
@@ -218,6 +218,16 @@ SQL_TEST_DIRS=(
 # is true so limited-role CI runs don't report false failures.
 SQL_REQUIRES_SUPERUSER=(
     "security/permission_audit.sql"
+)
+
+# Files that change database or server state when run. The suite must stay safe
+# to point at a real database, so these are never executed, whatever the
+# connection's privileges. Keep this list short: a script that only *suggests*
+# changes (prints ALTER/VACUUM text) belongs in the normal corpus, and template
+# sections inside read-only scripts should be commented-out examples instead.
+#   - maintenance/switch_pg_wal_file.sql: pg_switch_wal() forces a WAL segment
+#     switch; it is not transactional, so it can't be rolled back.
+SQL_MUTATING=(
     "maintenance/switch_pg_wal_file.sql"
 )
 
@@ -280,6 +290,11 @@ test_sql_syntax() {
 
         while IFS= read -r -d '' sql_file; do
             rel_path="${sql_file#"$PGTOOLS_ROOT"/}"
+
+            if _sql_list_contains "$rel_path" "${SQL_MUTATING[@]}"; then
+                [[ "$VERBOSE" == "true" ]] && log "Skipping state-changing script (never executed by tests): $rel_path"
+                continue
+            fi
 
             if _sql_list_contains "$rel_path" "${SQL_REQUIRES_TIMESCALEDB[@]}"; then
                 [[ "$VERBOSE" == "true" ]] && log "Skipping TimescaleDB-only script: $rel_path"
