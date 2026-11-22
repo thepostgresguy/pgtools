@@ -79,10 +79,11 @@ jobs:
 
           psql -tA -c "SHOW shared_preload_libraries;" | grep -q "pg_stat_statements"
 
-      - name: Enable pg_stat_statements
+      - name: Enable required extensions
         run: |
           psql -c "CREATE EXTENSION IF NOT EXISTS pg_stat_statements;"
-          psql -c "SELECT extname FROM pg_extension WHERE extname = 'pg_stat_statements';"
+          psql -c "CREATE EXTENSION IF NOT EXISTS pg_buffercache;"
+          psql -c "SELECT extname FROM pg_extension WHERE extname IN ('pg_stat_statements', 'pg_buffercache') ORDER BY extname;"
 
       - name: ShellCheck all shell scripts
         run: |
