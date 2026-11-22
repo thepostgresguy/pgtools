@@ -48,13 +48,13 @@ ls -la monitoring/*.sql
 ```
 
 ### Verify PostgreSQL Compatibility
-This toolkit has been tested against PostgreSQL 14 through 18. Check your PostgreSQL version:
+This toolkit has been tested against PostgreSQL 15 through 19. Check your PostgreSQL version:
 
 ```bash
 psql --version
 ```
 
-If you're running PostgreSQL 13 or earlier, some scripts may not function as expected. Consider upgrading or testing in a development environment first.
+If you're running PostgreSQL 14 or earlier, some scripts may not function as expected. Consider upgrading or testing in a development environment first.
 
 For more details on script requirements and compatibility, refer to the README files in each directory.
 
@@ -329,11 +329,11 @@ psql -d your_database -c "GRANT SELECT ON ALL TABLES IN SCHEMA pg_catalog TO you
 
 ### PostgreSQL Version-Specific Notes
 
-**Verified Support**: PostgreSQL 14, 15, 16, 17, and 18 (tested in CI)
+**Verified Support**: PostgreSQL 15, 16, 17, 18, and 19 (tested in CI)
 
-- **PostgreSQL 14-15**: Full compatibility; all core features available
-- **PostgreSQL 16-18**: Recommended for new deployments; all scripts validated
-- **PostgreSQL < 14**: Not tested; some scripts may not function as expected
+- **PostgreSQL 15**: Full compatibility; all core features available
+- **PostgreSQL 16-19**: Recommended for new deployments; all scripts validated
+- **PostgreSQL < 15**: Not tested; some scripts may not function as expected
 
 **Known Limitations**:
 - Some security audit scripts may need privilege verification on non-superuser accounts

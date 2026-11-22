@@ -25,6 +25,9 @@
  *   - Results should be reviewed by security team
  */
 
+\ir ../lib/preflight.sql
+DO $preflight$ BEGIN PERFORM pg_temp.pgtools_check('pg_monitor', NULL); END $preflight$;
+
 -- Database-level role and permission overview
 SELECT 
     r.rolname AS role_name,
@@ -36,8 +39,8 @@ SELECT
     r.rolreplication AS replication_privilege,
     r.rolbypassrls AS bypasses_rls,
     r.rolconnlimit AS connection_limit,
-    CASE r.rolpassword 
-        WHEN NULL THEN 'NO PASSWORD SET'
+    CASE 
+        WHEN r.rolpassword IS NULL THEN 'NO PASSWORD SET'
         ELSE 'PASSWORD SET'
     END AS password_status,
     r.rolvaliduntil AS password_expiry,

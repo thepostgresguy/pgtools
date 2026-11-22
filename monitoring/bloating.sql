@@ -84,6 +84,9 @@
  *   - After bulk operations: Immediate bloat check
  */
 
+\ir ../lib/preflight.sql
+DO $preflight$ BEGIN PERFORM pg_temp.pgtools_check('pg_monitor', NULL); END $preflight$;
+
 -- Table bloat estimation
 SELECT
     schemaname || '.' || relname AS table_name,
@@ -95,6 +98,6 @@ SELECT
     last_vacuum,
     last_autovacuum
 FROM pg_stat_user_tables
--- WHERE n_dead_tup > 0
+WHERE n_dead_tup > 1000
 ORDER BY n_dead_tup DESC
 LIMIT 50;

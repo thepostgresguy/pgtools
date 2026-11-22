@@ -25,6 +25,9 @@
  *   - Review recommendations with actual query plans
  */
 
+\ir ../lib/preflight.sql
+DO $preflight$ BEGIN PERFORM pg_temp.pgtools_check('pg_monitor', 'pg_stat_statements'); END $preflight$;
+
 -- Tables with high sequential scan activity (potential index candidates)
 SELECT 
     schemaname || '.' || relname AS table_name,
@@ -78,12 +81,18 @@ WITH fk_columns AS (
     WHERE tc.constraint_type = 'FOREIGN KEY'
 ),
 existing_indexes AS (
-    SELECT 
-        schemaname,
-        tablename,
-        indexname,
-        indexdef
-    FROM pg_indexes
+    -- Use catalog joins for exact column-level index matching (avoids LIKE false positives)
+    SELECT
+        n.nspname  AS schemaname,
+        t.relname  AS tablename,
+        i.relname  AS indexname,
+        a.attname  AS column_name
+    FROM pg_index ix
+    JOIN pg_class     t ON t.oid = ix.indrelid
+    JOIN pg_class     i ON i.oid = ix.indexrelid
+    JOIN pg_namespace n ON n.oid = t.relnamespace
+    JOIN pg_attribute a ON a.attrelid = t.oid
+                       AND a.attnum = ANY(ix.indkey)
 )
 SELECT 
     fk.table_schema || '.' || fk.table_name AS table_name,
@@ -109,9 +118,9 @@ SELECT
     pg_size_pretty(pg_relation_size(fk.table_schema||'.'||fk.table_name)) AS table_size
 FROM fk_columns fk
 LEFT JOIN existing_indexes ei 
-    ON ei.schemaname = fk.table_schema 
-    AND ei.tablename = fk.table_name
-    AND ei.indexdef LIKE '%' || fk.column_name || '%'
+    ON ei.schemaname  = fk.table_schema 
+    AND ei.tablename  = fk.table_name
+    AND ei.column_name = fk.column_name
 LEFT JOIN pg_stat_user_tables st 
     ON st.schemaname = fk.table_schema 
     AND st.relname = fk.table_name

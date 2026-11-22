@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        postgres_version: [14, 15, 16, 17, 18]
+        postgres_version: [15, 16, 17, 18, 19]
     env:
       PGHOST: localhost
       PGPORT: 5432
@@ -60,11 +60,6 @@ jobs:
           echo "PostgreSQL did not become ready in time" >&2
           exit 1
 
-      - name: Enable pg_stat_statements
-        run: |
-          psql -c "CREATE EXTENSION IF NOT EXISTS pg_stat_statements;"
-          psql -c "SELECT extname FROM pg_extension WHERE extname = 'pg_stat_statements';"
-
       - name: Configure preload and restart PostgreSQL
         run: |
           psql -c "ALTER SYSTEM SET shared_preload_libraries = 'pg_stat_statements';"
@@ -83,7 +78,12 @@ jobs:
           fi
 
           psql -tA -c "SHOW shared_preload_libraries;" | grep -q "pg_stat_statements"
-          psql -c "SELECT extname FROM pg_extension WHERE extname = 'pg_stat_statements';"
+
+      - name: Enable required extensions
+        run: |
+          psql -c "CREATE EXTENSION IF NOT EXISTS pg_stat_statements;"
+          psql -c "CREATE EXTENSION IF NOT EXISTS pg_buffercache;"
+          psql -c "SELECT extname FROM pg_extension WHERE extname IN ('pg_stat_statements', 'pg_buffercache') ORDER BY extname;"
 
       - name: ShellCheck all shell scripts
         run: |
